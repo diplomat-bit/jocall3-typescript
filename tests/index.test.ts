@@ -1,10 +1,10 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import { APIPromise } from 'jocall3-ts/core/api-promise';
+import { APIPromise } from 'jocall3-node/core/api-promise';
 
 import util from 'node:util';
-import Jocall3 from 'jocall3-ts';
-import { APIUserAbortError } from 'jocall3-ts';
+import Jocall3 from 'jocall3-node';
+import { APIUserAbortError } from 'jocall3-node';
 const defaultFetch = fetch;
 
 describe('instantiate client', () => {

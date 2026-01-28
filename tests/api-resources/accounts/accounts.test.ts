@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-import Jocall3 from 'jocall3-ts';
+import Jocall3 from 'jocall3-node';
 
 const client = new Jocall3({
   apiKey: 'My API Key',

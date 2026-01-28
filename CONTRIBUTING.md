@@ -55,12 +55,12 @@ $ cd jocall3-typescript
 # With yarn
 $ yarn link
 $ cd ../my-package
-$ yarn link jocall3-ts
+$ yarn link jocall3-node
 
 # With pnpm
 $ pnpm link --global
 $ cd ../my-package
-$ pnpm link -—global jocall3-ts
+$ pnpm link -—global jocall3-node
 ```
 
 ## Running tests

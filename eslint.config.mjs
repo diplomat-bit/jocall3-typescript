@@ -25,7 +25,7 @@ export default tseslint.config(
         {
           patterns: [
             {
-              regex: '^jocall3-ts(/.*)?',
+              regex: '^jocall3-node(/.*)?',
               message: 'Use a relative import, not a package import.',
             },
           ],
