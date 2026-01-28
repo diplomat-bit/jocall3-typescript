@@ -1,5 +1,5 @@
-import { multipartFormRequestOptions, createForm } from 'jocall3-ts/internal/uploads';
-import { toFile } from 'jocall3-ts/core/uploads';
+import { multipartFormRequestOptions, createForm } from 'jocall3-node/internal/uploads';
+import { toFile } from 'jocall3-node/core/uploads';
 
 describe('form data validation', () => {
   test('valid values do not error', async () => {

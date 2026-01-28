@@ -1,5 +1,5 @@
 {
-  "name": "jocall3-ts",
+  "name": "jocall3-node",
   "version": "0.0.1",
   "description": "The official TypeScript library for the Jocall3 API",
   "author": "Jocall3 <diplomat@citibankdemobusiness.dev>",

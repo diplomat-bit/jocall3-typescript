@@ -1,6 +1,6 @@
 import fs from 'fs';
-import type { ResponseLike } from 'jocall3-ts/internal/to-file';
-import { toFile } from 'jocall3-ts/core/uploads';
+import type { ResponseLike } from 'jocall3-node/internal/to-file';
+import { toFile } from 'jocall3-node/core/uploads';
 import { File } from 'node:buffer';
 
 class MyClass {
@@ -97,7 +97,7 @@ describe('missing File error message', () => {
   });
 
   test('is thrown', async () => {
-    const uploads = await import('jocall3-ts/core/uploads');
+    const uploads = await import('jocall3-node/core/uploads');
     await expect(
       uploads.toFile(mockResponse({ url: 'https://example.com/my/audio.mp3' })),
     ).rejects.toMatchInlineSnapshot(
