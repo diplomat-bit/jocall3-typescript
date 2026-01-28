@@ -7,8 +7,8 @@ const config: JestConfigWithTsJest = {
     '^.+\\.(t|j)sx?$': ['@swc/jest', { sourceMaps: 'inline' }],
   },
   moduleNameMapper: {
-    '^jocall3-ts$': '<rootDir>/src/index.ts',
-    '^jocall3-ts/(.*)$': '<rootDir>/src/$1',
+    '^jocall3-node$': '<rootDir>/src/index.ts',
+    '^jocall3-node/(.*)$': '<rootDir>/src/$1',
   },
   modulePathIgnorePatterns: [
     '<rootDir>/ecosystem-tests/',

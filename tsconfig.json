@@ -8,8 +8,8 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "paths": {
-      "jocall3-ts/*": ["./src/*"],
-      "jocall3-ts": ["./src/index.ts"]
+      "jocall3-node/*": ["./src/*"],
+      "jocall3-node": ["./src/index.ts"]
     },
     "noEmit": true,
 
