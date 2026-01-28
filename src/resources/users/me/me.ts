@@ -10,13 +10,18 @@ import {
 } from './biometrics';
 import * as DevicesAPI from './devices';
 import { DeviceListParams, DeviceListResponse, Devices } from './devices';
-import * as SecurityAPI from './security';
-import { Security } from './security';
+import * as PreferencesAPI from './preferences';
+import {
+  PreferenceRetrieveResponse,
+  PreferenceUpdateParams,
+  PreferenceUpdateResponse,
+  Preferences as PreferencesAPIPreferences,
+} from './preferences';
 import { APIPromise } from '../../../core/api-promise';
 import { RequestOptions } from '../../../internal/request-options';
 
 export class Me extends APIResource {
-  security: SecurityAPI.Security = new SecurityAPI.Security(this._client);
+  preferences: PreferencesAPI.Preferences = new PreferencesAPI.Preferences(this._client);
   devices: DevicesAPI.Devices = new DevicesAPI.Devices(this._client);
   biometrics: BiometricsAPI.Biometrics = new BiometricsAPI.Biometrics(this._client);
 
@@ -124,7 +129,7 @@ export namespace MeUpdateParams {
   }
 }
 
-Me.Security = Security;
+Me.Preferences = PreferencesAPIPreferences;
 Me.Devices = Devices;
 Me.Biometrics = Biometrics;
 
@@ -135,7 +140,12 @@ export declare namespace Me {
     type MeUpdateParams as MeUpdateParams,
   };
 
-  export { Security as Security };
+  export {
+    PreferencesAPIPreferences as Preferences,
+    type PreferenceRetrieveResponse as PreferenceRetrieveResponse,
+    type PreferenceUpdateResponse as PreferenceUpdateResponse,
+    type PreferenceUpdateParams as PreferenceUpdateParams,
+  };
 
   export {
     Devices as Devices,

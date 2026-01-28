@@ -17,6 +17,14 @@ import * as Uploads from './core/uploads';
 import * as API from './resources/index';
 import { APIPromise } from './core/api-promise';
 import {
+  BudgetListParams,
+  BudgetListResponse,
+  BudgetRetrieveResponse,
+  BudgetUpdateParams,
+  BudgetUpdateResponse,
+  Budgets,
+} from './resources/budgets';
+import {
   AccountLinkParams,
   AccountLinkResponse,
   AccountListParams,
@@ -26,18 +34,15 @@ import {
 } from './resources/accounts/accounts';
 import { AI } from './resources/ai/ai';
 import { Corporate } from './resources/corporate/corporate';
-import { Lending } from './resources/lending/lending';
-import {
-  Marketplace,
-  MarketplaceListProductsParams,
-  MarketplaceListProductsResponse,
-} from './resources/marketplace/marketplace';
+import { Investments } from './resources/investments/investments';
 import { Payments } from './resources/payments/payments';
 import {
   Sustainability,
   SustainabilityGetFootprintResponse,
 } from './resources/sustainability/sustainability';
 import {
+  TransactionAddNotesParams,
+  TransactionAddNotesResponse,
   TransactionCategorizeParams,
   TransactionCategorizeResponse,
   TransactionListParams,
@@ -67,29 +72,24 @@ import {
 import { isEmptyObj } from './internal/utils/values';
 
 const environments = {
-  production: 'https://75975599-8fdc-4274-8701-05fc0b8089cc.mock.pstmn.io',
-  sandbox: 'https://75975599-8fdc-4274-8701-05fc0b8089cc.mock.pstmn.io',
+  production: 'https://api.quantum-core.finance/v1',
+  sandbox: 'https://sandbox.quantum-core.finance/v1',
   gemini_direct: 'https://generativelanguage.googleapis.com/v1beta',
 };
 type Environment = keyof typeof environments;
 
 export interface ClientOptions {
   /**
-   * Defaults to process.env['JOCALL3_API_KEY'].
-   */
-  apiKey?: string | undefined;
-
-  /**
    * Defaults to process.env['GEMINI_API_KEY'].
    */
-  geminiAPIKey?: string | undefined;
+  geminiAPIKey?: string | null | undefined;
 
   /**
    * Specifies the environment to use for the API.
    *
    * Each environment maps to a different base URL:
-   * - `production` corresponds to `https://75975599-8fdc-4274-8701-05fc0b8089cc.mock.pstmn.io`
-   * - `sandbox` corresponds to `https://75975599-8fdc-4274-8701-05fc0b8089cc.mock.pstmn.io`
+   * - `production` corresponds to `https://api.quantum-core.finance/v1`
+   * - `sandbox` corresponds to `https://sandbox.quantum-core.finance/v1`
    * - `gemini_direct` corresponds to `https://generativelanguage.googleapis.com/v1beta`
    */
   environment?: Environment | undefined;
@@ -167,8 +167,7 @@ export interface ClientOptions {
  * API Client for interfacing with the Jocall3 API.
  */
 export class Jocall3 {
-  apiKey: string;
-  geminiAPIKey: string;
+  geminiAPIKey: string | null;
 
   baseURL: string;
   maxRetries: number;
@@ -185,10 +184,9 @@ export class Jocall3 {
   /**
    * API Client for interfacing with the Jocall3 API.
    *
-   * @param {string | undefined} [opts.apiKey=process.env['JOCALL3_API_KEY'] ?? undefined]
-   * @param {string | undefined} [opts.geminiAPIKey=process.env['GEMINI_API_KEY'] ?? undefined]
+   * @param {string | null | undefined} [opts.geminiAPIKey=process.env['GEMINI_API_KEY'] ?? null]
    * @param {Environment} [opts.environment=production] - Specifies the environment URL to use for the API.
-   * @param {string} [opts.baseURL=process.env['JOCALL3_BASE_URL'] ?? https://75975599-8fdc-4274-8701-05fc0b8089cc.mock.pstmn.io] - Override the default base URL for the API.
+   * @param {string} [opts.baseURL=process.env['JOCALL3_BASE_URL'] ?? https://api.quantum-core.finance/v1] - Override the default base URL for the API.
    * @param {number} [opts.timeout=1 minute] - The maximum amount of time (in milliseconds) the client will wait for a response before timing out.
    * @param {MergedRequestInit} [opts.fetchOptions] - Additional `RequestInit` options to be passed to `fetch` calls.
    * @param {Fetch} [opts.fetch] - Specify a custom `fetch` function implementation.
@@ -198,23 +196,10 @@ export class Jocall3 {
    */
   constructor({
     baseURL = readEnv('JOCALL3_BASE_URL'),
-    apiKey = readEnv('JOCALL3_API_KEY'),
-    geminiAPIKey = readEnv('GEMINI_API_KEY'),
+    geminiAPIKey = readEnv('GEMINI_API_KEY') ?? null,
     ...opts
   }: ClientOptions = {}) {
-    if (apiKey === undefined) {
-      throw new Errors.Jocall3Error(
-        "The JOCALL3_API_KEY environment variable is missing or empty; either provide it, or instantiate the Jocall3 client with an apiKey option, like new Jocall3({ apiKey: 'My API Key' }).",
-      );
-    }
-    if (geminiAPIKey === undefined) {
-      throw new Errors.Jocall3Error(
-        "The GEMINI_API_KEY environment variable is missing or empty; either provide it, or instantiate the Jocall3 client with an geminiAPIKey option, like new Jocall3({ geminiAPIKey: 'My Gemini API Key' }).",
-      );
-    }
-
     const options: ClientOptions = {
-      apiKey,
       geminiAPIKey,
       ...opts,
       baseURL,
@@ -244,7 +229,6 @@ export class Jocall3 {
 
     this._options = options;
 
-    this.apiKey = apiKey;
     this.geminiAPIKey = geminiAPIKey;
   }
 
@@ -262,7 +246,6 @@ export class Jocall3 {
       logLevel: this.logLevel,
       fetch: this.fetch,
       fetchOptions: this.fetchOptions,
-      apiKey: this.apiKey,
       geminiAPIKey: this.geminiAPIKey,
       ...options,
     });
@@ -281,18 +264,22 @@ export class Jocall3 {
   }
 
   protected validateHeaders({ values, nulls }: NullableHeaders) {
-    return;
+    if (this.geminiAPIKey && values.get('x-goog-api-key')) {
+      return;
+    }
+    if (nulls.has('x-goog-api-key')) {
+      return;
+    }
+
+    throw new Error(
+      'Could not resolve authentication method. Expected the geminiAPIKey to be set. Or for the "x-goog-api-key" headers to be explicitly omitted',
+    );
   }
 
   protected async authHeaders(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
-    return buildHeaders([await this.bearerAuth(opts), await this.geminiHeaderAuth(opts)]);
-  }
-
-  protected async bearerAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
-    return buildHeaders([{ Authorization: `Bearer ${this.apiKey}` }]);
-  }
-
-  protected async geminiHeaderAuth(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
+    if (this.geminiAPIKey == null) {
+      return undefined;
+    }
     return buildHeaders([{ 'x-goog-api-key': this.geminiAPIKey }]);
   }
 
@@ -803,25 +790,25 @@ export class Jocall3 {
   users: API.Users = new API.Users(this);
   accounts: API.Accounts = new API.Accounts(this);
   transactions: API.Transactions = new API.Transactions(this);
+  budgets: API.Budgets = new API.Budgets(this);
+  investments: API.Investments = new API.Investments(this);
   ai: API.AI = new API.AI(this);
   corporate: API.Corporate = new API.Corporate(this);
   web3: API.Web3 = new API.Web3(this);
   payments: API.Payments = new API.Payments(this);
   sustainability: API.Sustainability = new API.Sustainability(this);
-  marketplace: API.Marketplace = new API.Marketplace(this);
-  lending: API.Lending = new API.Lending(this);
 }
 
 Jocall3.Users = Users;
 Jocall3.Accounts = Accounts;
 Jocall3.Transactions = Transactions;
+Jocall3.Budgets = Budgets;
+Jocall3.Investments = Investments;
 Jocall3.AI = AI;
 Jocall3.Corporate = Corporate;
 Jocall3.Web3 = Web3;
 Jocall3.Payments = Payments;
 Jocall3.Sustainability = Sustainability;
-Jocall3.Marketplace = Marketplace;
-Jocall3.Lending = Lending;
 
 export declare namespace Jocall3 {
   export type RequestOptions = Opts.RequestOptions;
@@ -847,10 +834,23 @@ export declare namespace Jocall3 {
     Transactions as Transactions,
     type TransactionRetrieveResponse as TransactionRetrieveResponse,
     type TransactionListResponse as TransactionListResponse,
+    type TransactionAddNotesResponse as TransactionAddNotesResponse,
     type TransactionCategorizeResponse as TransactionCategorizeResponse,
     type TransactionListParams as TransactionListParams,
+    type TransactionAddNotesParams as TransactionAddNotesParams,
     type TransactionCategorizeParams as TransactionCategorizeParams,
   };
+
+  export {
+    Budgets as Budgets,
+    type BudgetRetrieveResponse as BudgetRetrieveResponse,
+    type BudgetUpdateResponse as BudgetUpdateResponse,
+    type BudgetListResponse as BudgetListResponse,
+    type BudgetUpdateParams as BudgetUpdateParams,
+    type BudgetListParams as BudgetListParams,
+  };
+
+  export { Investments as Investments };
 
   export { AI as AI };
 
@@ -864,12 +864,4 @@ export declare namespace Jocall3 {
     Sustainability as Sustainability,
     type SustainabilityGetFootprintResponse as SustainabilityGetFootprintResponse,
   };
-
-  export {
-    Marketplace as Marketplace,
-    type MarketplaceListProductsResponse as MarketplaceListProductsResponse,
-    type MarketplaceListProductsParams as MarketplaceListProductsParams,
-  };
-
-  export { Lending as Lending };
 }
