@@ -7,7 +7,7 @@ Types:
 
 Methods:
 
-- <code title="post /users/login">client.users.<a href="./src/resources/users/users.ts">login</a>() -> unknown</code>
+- <code title="post /users/login">client.users.<a href="./src/resources/users/users.ts">login</a>({ ...params }) -> UserLoginResponse</code>
 - <code title="post /users/register">client.users.<a href="./src/resources/users/users.ts">register</a>({ ...params }) -> UserRegisterResponse</code>
 
 ## Me
@@ -32,7 +32,7 @@ Types:
 
 Methods:
 
-- <code title="get /users/me/devices">client.users.me.devices.<a href="./src/resources/users/me/devices.ts">list</a>({ ...params }) -> unknown</code>
+- <code title="get /users/me/devices">client.users.me.devices.<a href="./src/resources/users/me/devices.ts">list</a>({ ...params }) -> DeviceListResponse</code>
 
 ### Biometrics
 
@@ -43,8 +43,8 @@ Types:
 
 Methods:
 
-- <code title="get /users/me/biometrics">client.users.me.biometrics.<a href="./src/resources/users/me/biometrics.ts">retrieveStatus</a>() -> unknown</code>
-- <code title="post /users/me/biometrics/verify">client.users.me.biometrics.<a href="./src/resources/users/me/biometrics.ts">verify</a>() -> unknown</code>
+- <code title="get /users/me/biometrics">client.users.me.biometrics.<a href="./src/resources/users/me/biometrics.ts">retrieveStatus</a>() -> BiometricRetrieveStatusResponse</code>
+- <code title="post /users/me/biometrics/verify">client.users.me.biometrics.<a href="./src/resources/users/me/biometrics.ts">verify</a>({ ...params }) -> BiometricVerifyResponse</code>
 
 # Accounts
 
@@ -57,8 +57,8 @@ Types:
 Methods:
 
 - <code title="get /accounts/{accountId}/details">client.accounts.<a href="./src/resources/accounts/accounts.ts">retrieve</a>(accountID) -> AccountRetrieveResponse</code>
-- <code title="get /accounts/me">client.accounts.<a href="./src/resources/accounts/accounts.ts">list</a>({ ...params }) -> unknown</code>
-- <code title="post /accounts/link">client.accounts.<a href="./src/resources/accounts/accounts.ts">link</a>() -> unknown</code>
+- <code title="get /accounts/me">client.accounts.<a href="./src/resources/accounts/accounts.ts">list</a>({ ...params }) -> AccountListResponse</code>
+- <code title="post /accounts/link">client.accounts.<a href="./src/resources/accounts/accounts.ts">link</a>({ ...params }) -> AccountLinkResponse</code>
 
 ## Transactions
 
@@ -68,7 +68,7 @@ Types:
 
 Methods:
 
-- <code title="get /accounts/{accountId}/transactions/pending">client.accounts.transactions.<a href="./src/resources/accounts/transactions.ts">listPending</a>(accountID, { ...params }) -> unknown</code>
+- <code title="get /accounts/{accountId}/transactions/pending">client.accounts.transactions.<a href="./src/resources/accounts/transactions.ts">listPending</a>(accountID, { ...params }) -> TransactionListPendingResponse</code>
 
 ## Statements
 
@@ -89,8 +89,8 @@ Types:
 
 Methods:
 
-- <code title="put /accounts/{accountId}/overdraft-settings">client.accounts.overdraft.<a href="./src/resources/accounts/overdraft.ts">update</a>(accountID) -> unknown</code>
-- <code title="get /accounts/{accountId}/overdraft-settings">client.accounts.overdraft.<a href="./src/resources/accounts/overdraft.ts">get</a>(accountID) -> unknown</code>
+- <code title="put /accounts/{accountId}/overdraft-settings">client.accounts.overdraft.<a href="./src/resources/accounts/overdraft.ts">update</a>(accountID, { ...params }) -> OverdraftUpdateResponse</code>
+- <code title="get /accounts/{accountId}/overdraft-settings">client.accounts.overdraft.<a href="./src/resources/accounts/overdraft.ts">get</a>(accountID) -> OverdraftGetResponse</code>
 
 # Transactions
 
@@ -103,8 +103,8 @@ Types:
 Methods:
 
 - <code title="get /transactions/{transactionId}">client.transactions.<a href="./src/resources/transactions/transactions.ts">retrieve</a>(transactionID) -> TransactionRetrieveResponse</code>
-- <code title="get /transactions">client.transactions.<a href="./src/resources/transactions/transactions.ts">list</a>({ ...params }) -> unknown</code>
-- <code title="put /transactions/{transactionId}/categorize">client.transactions.<a href="./src/resources/transactions/transactions.ts">categorize</a>(transactionID) -> TransactionCategorizeResponse</code>
+- <code title="get /transactions">client.transactions.<a href="./src/resources/transactions/transactions.ts">list</a>({ ...params }) -> TransactionListResponse</code>
+- <code title="put /transactions/{transactionId}/categorize">client.transactions.<a href="./src/resources/transactions/transactions.ts">categorize</a>(transactionID, { ...params }) -> TransactionCategorizeResponse</code>
 
 ## Recurring
 
@@ -114,7 +114,7 @@ Types:
 
 Methods:
 
-- <code title="get /transactions/recurring">client.transactions.recurring.<a href="./src/resources/transactions/recurring.ts">list</a>({ ...params }) -> unknown</code>
+- <code title="get /transactions/recurring">client.transactions.recurring.<a href="./src/resources/transactions/recurring.ts">list</a>({ ...params }) -> RecurringListResponse</code>
 
 ## Insights
 
@@ -124,7 +124,7 @@ Types:
 
 Methods:
 
-- <code title="get /transactions/insights/spending-trends">client.transactions.insights.<a href="./src/resources/transactions/insights.ts">getTrends</a>() -> unknown</code>
+- <code title="get /transactions/insights/spending-trends">client.transactions.insights.<a href="./src/resources/transactions/insights.ts">getTrends</a>() -> InsightGetTrendsResponse</code>
 
 # AI
 
@@ -304,23 +304,7 @@ Methods:
 
 # Marketplace
 
-Types:
-
-- <code><a href="./src/resources/marketplace/marketplace.ts">MarketplaceListProductsResponse</a></code>
-
-Methods:
-
-- <code title="get /marketplace/products">client.marketplace.<a href="./src/resources/marketplace/marketplace.ts">listProducts</a>({ ...params }) -> unknown</code>
-
 ## Offers
-
-Types:
-
-- <code><a href="./src/resources/marketplace/offers.ts">OfferRedeemResponse</a></code>
-
-Methods:
-
-- <code title="post /marketplace/offers/{offerId}/redeem">client.marketplace.offers.<a href="./src/resources/marketplace/offers.ts">redeem</a>(offerID) -> unknown</code>
 
 # Lending
 

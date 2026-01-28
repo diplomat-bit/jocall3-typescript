@@ -15,12 +15,51 @@ export class Recurring extends APIResource {
    *   await client.transactions.recurring.list();
    * ```
    */
-  list(query: RecurringListParams | null | undefined = {}, options?: RequestOptions): APIPromise<unknown> {
+  list(
+    query: RecurringListParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<RecurringListResponse> {
     return this._client.get('/transactions/recurring', { query, ...options });
   }
 }
 
-export type RecurringListResponse = unknown;
+export interface RecurringListResponse {
+  data: Array<RecurringListResponse.Data>;
+
+  limit: number;
+
+  offset: number;
+
+  total: number;
+
+  nextOffset?: number;
+}
+
+export namespace RecurringListResponse {
+  export interface Data {
+    id?: string;
+
+    aiConfidenceScore?: number;
+
+    amount?: number;
+
+    category?: string;
+
+    currency?: string;
+
+    description?: string;
+
+    frequency?: string;
+
+    lastPaidDate?: string;
+
+    linkedAccountId?: string;
+
+    nextDueDate?: string;
+
+    status?: string;
+  }
+}
 
 export interface RecurringListParams {
   /**

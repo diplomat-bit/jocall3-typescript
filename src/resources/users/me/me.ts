@@ -40,7 +40,10 @@ export class Me extends APIResource {
    *
    * @example
    * ```ts
-   * const me = await client.users.me.update();
+   * const me = await client.users.me.update({
+   *   name: 'Quantum Visionary Pro',
+   *   phone: '+1-555-999-0000',
+   * });
    * ```
    */
   update(
@@ -52,7 +55,27 @@ export class Me extends APIResource {
 }
 
 export interface MeRetrieveResponse {
-  address?: unknown;
+  id: string;
+
+  email: string;
+
+  identityVerified: boolean;
+
+  name: string;
+
+  address?: MeRetrieveResponse.Address;
+
+  aiPersona?: string;
+
+  dateOfBirth?: string;
+
+  gamificationLevel?: number;
+
+  loyaltyPoints?: number;
+
+  loyaltyTier?: string;
+
+  phone?: string;
 
   /**
    * User's personalized preferences for the platform.
@@ -62,23 +85,93 @@ export interface MeRetrieveResponse {
   /**
    * Security-related status for the user account.
    */
-  securityStatus?: unknown;
+  securityStatus?: MeRetrieveResponse.SecurityStatus;
 }
 
 export namespace MeRetrieveResponse {
+  export interface Address {
+    city?: string;
+
+    country?: string;
+
+    state?: string;
+
+    street?: string;
+
+    zip?: string;
+  }
+
   /**
    * User's personalized preferences for the platform.
    */
   export interface Preferences {
+    aiInteractionMode?: string;
+
+    dataSharingConsent?: boolean;
+
     /**
      * Preferred channels for receiving notifications.
      */
-    notificationChannels?: unknown;
+    notificationChannels?: Preferences.NotificationChannels;
+
+    preferredLanguage?: string;
+
+    theme?: string;
+
+    transactionGrouping?: string;
+  }
+
+  export namespace Preferences {
+    /**
+     * Preferred channels for receiving notifications.
+     */
+    export interface NotificationChannels {
+      email?: boolean;
+
+      inApp?: boolean;
+
+      push?: boolean;
+
+      sms?: boolean;
+    }
+  }
+
+  /**
+   * Security-related status for the user account.
+   */
+  export interface SecurityStatus {
+    biometricsEnrolled?: boolean;
+
+    lastLogin?: string;
+
+    lastLoginIp?: string;
+
+    twoFactorEnabled?: boolean;
   }
 }
 
 export interface MeUpdateResponse {
-  address?: unknown;
+  id: string;
+
+  email: string;
+
+  identityVerified: boolean;
+
+  name: string;
+
+  address?: MeUpdateResponse.Address;
+
+  aiPersona?: string;
+
+  dateOfBirth?: string;
+
+  gamificationLevel?: number;
+
+  loyaltyPoints?: number;
+
+  loyaltyTier?: string;
+
+  phone?: string;
 
   /**
    * User's personalized preferences for the platform.
@@ -88,23 +181,77 @@ export interface MeUpdateResponse {
   /**
    * Security-related status for the user account.
    */
-  securityStatus?: unknown;
+  securityStatus?: MeUpdateResponse.SecurityStatus;
 }
 
 export namespace MeUpdateResponse {
+  export interface Address {
+    city?: string;
+
+    country?: string;
+
+    state?: string;
+
+    street?: string;
+
+    zip?: string;
+  }
+
   /**
    * User's personalized preferences for the platform.
    */
   export interface Preferences {
+    aiInteractionMode?: string;
+
+    dataSharingConsent?: boolean;
+
     /**
      * Preferred channels for receiving notifications.
      */
-    notificationChannels?: unknown;
+    notificationChannels?: Preferences.NotificationChannels;
+
+    preferredLanguage?: string;
+
+    theme?: string;
+
+    transactionGrouping?: string;
+  }
+
+  export namespace Preferences {
+    /**
+     * Preferred channels for receiving notifications.
+     */
+    export interface NotificationChannels {
+      email?: boolean;
+
+      inApp?: boolean;
+
+      push?: boolean;
+
+      sms?: boolean;
+    }
+  }
+
+  /**
+   * Security-related status for the user account.
+   */
+  export interface SecurityStatus {
+    biometricsEnrolled?: boolean;
+
+    lastLogin?: string;
+
+    lastLoginIp?: string;
+
+    twoFactorEnabled?: boolean;
   }
 }
 
 export interface MeUpdateParams {
-  address?: unknown;
+  address?: MeUpdateParams.Address;
+
+  name?: string;
+
+  phone?: string;
 
   /**
    * User's personalized preferences for the platform.
@@ -113,14 +260,51 @@ export interface MeUpdateParams {
 }
 
 export namespace MeUpdateParams {
+  export interface Address {
+    city?: string;
+
+    country?: string;
+
+    state?: string;
+
+    street?: string;
+
+    zip?: string;
+  }
+
   /**
    * User's personalized preferences for the platform.
    */
   export interface Preferences {
+    aiInteractionMode?: string;
+
+    dataSharingConsent?: boolean;
+
     /**
      * Preferred channels for receiving notifications.
      */
-    notificationChannels?: unknown;
+    notificationChannels?: Preferences.NotificationChannels;
+
+    preferredLanguage?: string;
+
+    theme?: string;
+
+    transactionGrouping?: string;
+  }
+
+  export namespace Preferences {
+    /**
+     * Preferred channels for receiving notifications.
+     */
+    export interface NotificationChannels {
+      email?: boolean;
+
+      inApp?: boolean;
+
+      push?: boolean;
+
+      sms?: boolean;
+    }
   }
 }
 
