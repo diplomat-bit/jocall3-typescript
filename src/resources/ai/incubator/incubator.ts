@@ -1,13 +1,18 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../../core/resource';
-import * as AnalysisAPI from './analysis';
-import { Analysis } from './analysis';
+import * as PitchAPI from './pitch';
+import {
+  Pitch,
+  PitchRetrieveDetailsResponse,
+  PitchSubmitFeedbackParams,
+  PitchSubmitFeedbackResponse,
+} from './pitch';
 import { APIPromise } from '../../../core/api-promise';
 import { RequestOptions } from '../../../internal/request-options';
 
 export class Incubator extends APIResource {
-  analysis: AnalysisAPI.Analysis = new AnalysisAPI.Analysis(this._client);
+  pitch: PitchAPI.Pitch = new PitchAPI.Pitch(this._client);
 
   /**
    * Submits a detailed business plan to the Quantum Weaver AI for rigorous analysis,
@@ -32,9 +37,27 @@ export class Incubator extends APIResource {
   generatePitch(body: IncubatorGeneratePitchParams, options?: RequestOptions): APIPromise<unknown> {
     return this._client.post('/ai/incubator/pitch', { body, ...options });
   }
+
+  /**
+   * Retrieves a summary list of all business pitches submitted by the authenticated
+   * user to Quantum Weaver.
+   *
+   * @example
+   * ```ts
+   * const response = await client.ai.incubator.listPitches();
+   * ```
+   */
+  listPitches(
+    query: IncubatorListPitchesParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<unknown> {
+    return this._client.get('/ai/incubator/pitches', { query, ...options });
+  }
 }
 
 export type IncubatorGeneratePitchResponse = unknown;
+
+export type IncubatorListPitchesResponse = unknown;
 
 export interface IncubatorGeneratePitchParams {
   /**
@@ -43,13 +66,37 @@ export interface IncubatorGeneratePitchParams {
   financialProjections: unknown;
 }
 
-Incubator.Analysis = Analysis;
+export interface IncubatorListPitchesParams {
+  /**
+   * Maximum number of items to return in a single page.
+   */
+  limit?: number;
+
+  /**
+   * Number of items to skip before starting to collect the result set.
+   */
+  offset?: number;
+
+  /**
+   * Filter pitches by their current stage.
+   */
+  status?: string;
+}
+
+Incubator.Pitch = Pitch;
 
 export declare namespace Incubator {
   export {
     type IncubatorGeneratePitchResponse as IncubatorGeneratePitchResponse,
+    type IncubatorListPitchesResponse as IncubatorListPitchesResponse,
     type IncubatorGeneratePitchParams as IncubatorGeneratePitchParams,
+    type IncubatorListPitchesParams as IncubatorListPitchesParams,
   };
 
-  export { Analysis as Analysis };
+  export {
+    Pitch as Pitch,
+    type PitchRetrieveDetailsResponse as PitchRetrieveDetailsResponse,
+    type PitchSubmitFeedbackResponse as PitchSubmitFeedbackResponse,
+    type PitchSubmitFeedbackParams as PitchSubmitFeedbackParams,
+  };
 }

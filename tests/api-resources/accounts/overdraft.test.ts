@@ -3,7 +3,6 @@
 import Jocall3 from 'jocall3-node';
 
 const client = new Jocall3({
-  apiKey: 'My API Key',
   geminiAPIKey: 'My Gemini API Key',
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
