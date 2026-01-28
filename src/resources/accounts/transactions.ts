@@ -22,12 +22,50 @@ export class Transactions extends APIResource {
     accountID: string,
     query: TransactionListPendingParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<unknown> {
+  ): APIPromise<TransactionListPendingResponse> {
     return this._client.get(path`/accounts/${accountID}/transactions/pending`, { query, ...options });
   }
 }
 
-export type TransactionListPendingResponse = unknown;
+export interface TransactionListPendingResponse {
+  data: Array<TransactionListPendingResponse.Data>;
+
+  limit: number;
+
+  offset: number;
+
+  total: number;
+
+  nextOffset?: number;
+}
+
+export namespace TransactionListPendingResponse {
+  export interface Data {
+    id?: string;
+
+    accountId?: string;
+
+    aiCategoryConfidence?: number;
+
+    amount?: number;
+
+    carbonFootprint?: number;
+
+    category?: string;
+
+    currency?: string;
+
+    date?: string;
+
+    description?: string;
+
+    disputeStatus?: string;
+
+    paymentChannel?: string;
+
+    type?: string;
+  }
+}
 
 export interface TransactionListPendingParams {
   /**
