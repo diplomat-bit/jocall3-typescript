@@ -14,14 +14,15 @@ export class Overdraft extends APIResource {
    * ```ts
    * const overdraft = await client.accounts.overdraft.update(
    *   'acc_chase_checking_4567',
+   *   { feePreference: 'decline_if_over_limit' },
    * );
    * ```
    */
   update(
     accountID: string,
-    body?: OverdraftUpdateParams | null | undefined,
+    body: OverdraftUpdateParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<unknown> {
+  ): APIPromise<OverdraftUpdateResponse> {
     return this._client.put(path`/accounts/${accountID}/overdraft-settings`, { body, ...options });
   }
 
@@ -35,16 +36,46 @@ export class Overdraft extends APIResource {
    * );
    * ```
    */
-  get(accountID: string, options?: RequestOptions): APIPromise<unknown> {
+  get(accountID: string, options?: RequestOptions): APIPromise<OverdraftGetResponse> {
     return this._client.get(path`/accounts/${accountID}/overdraft-settings`, options);
   }
 }
 
-export type OverdraftUpdateResponse = unknown;
+export interface OverdraftUpdateResponse {
+  accountId: string;
 
-export type OverdraftGetResponse = unknown;
+  enabled: boolean;
 
-export interface OverdraftUpdateParams {}
+  feePreference: string;
+
+  linkedSavingsAccountId?: string;
+
+  linkToSavings?: boolean;
+
+  protectionLimit?: number;
+}
+
+export interface OverdraftGetResponse {
+  accountId: string;
+
+  enabled: boolean;
+
+  feePreference: string;
+
+  linkedSavingsAccountId?: string;
+
+  linkToSavings?: boolean;
+
+  protectionLimit?: number;
+}
+
+export interface OverdraftUpdateParams {
+  enabled?: boolean;
+
+  feePreference?: string;
+
+  linkToSavings?: boolean;
+}
 
 export declare namespace Overdraft {
   export {

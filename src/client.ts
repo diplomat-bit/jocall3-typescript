@@ -36,10 +36,7 @@ import { AI } from './resources/ai/ai';
 import { Corporate } from './resources/corporate/corporate';
 import { Investments } from './resources/investments/investments';
 import { Payments } from './resources/payments/payments';
-import {
-  Sustainability,
-  SustainabilityGetFootprintResponse,
-} from './resources/sustainability/sustainability';
+import { Sustainability } from './resources/sustainability/sustainability';
 import {
   TransactionAddNotesParams,
   TransactionAddNotesResponse,
@@ -79,6 +76,11 @@ const environments = {
 type Environment = keyof typeof environments;
 
 export interface ClientOptions {
+  /**
+   * Defaults to process.env['JOCALL3_API_KEY'].
+   */
+  apiKey?: string | null | undefined;
+
   /**
    * Defaults to process.env['GEMINI_API_KEY'].
    */
@@ -167,6 +169,7 @@ export interface ClientOptions {
  * API Client for interfacing with the Jocall3 API.
  */
 export class Jocall3 {
+  apiKey: string | null;
   geminiAPIKey: string | null;
 
   baseURL: string;
@@ -184,6 +187,7 @@ export class Jocall3 {
   /**
    * API Client for interfacing with the Jocall3 API.
    *
+   * @param {string | null | undefined} [opts.apiKey=process.env['JOCALL3_API_KEY'] ?? null]
    * @param {string | null | undefined} [opts.geminiAPIKey=process.env['GEMINI_API_KEY'] ?? null]
    * @param {Environment} [opts.environment=production] - Specifies the environment URL to use for the API.
    * @param {string} [opts.baseURL=process.env['JOCALL3_BASE_URL'] ?? https://api.quantum-core.finance/v1] - Override the default base URL for the API.
@@ -196,10 +200,12 @@ export class Jocall3 {
    */
   constructor({
     baseURL = readEnv('JOCALL3_BASE_URL'),
+    apiKey = readEnv('JOCALL3_API_KEY') ?? null,
     geminiAPIKey = readEnv('GEMINI_API_KEY') ?? null,
     ...opts
   }: ClientOptions = {}) {
     const options: ClientOptions = {
+      apiKey,
       geminiAPIKey,
       ...opts,
       baseURL,
@@ -229,6 +235,7 @@ export class Jocall3 {
 
     this._options = options;
 
+    this.apiKey = apiKey;
     this.geminiAPIKey = geminiAPIKey;
   }
 
@@ -246,6 +253,7 @@ export class Jocall3 {
       logLevel: this.logLevel,
       fetch: this.fetch,
       fetchOptions: this.fetchOptions,
+      apiKey: this.apiKey,
       geminiAPIKey: this.geminiAPIKey,
       ...options,
     });
@@ -264,23 +272,7 @@ export class Jocall3 {
   }
 
   protected validateHeaders({ values, nulls }: NullableHeaders) {
-    if (this.geminiAPIKey && values.get('x-goog-api-key')) {
-      return;
-    }
-    if (nulls.has('x-goog-api-key')) {
-      return;
-    }
-
-    throw new Error(
-      'Could not resolve authentication method. Expected the geminiAPIKey to be set. Or for the "x-goog-api-key" headers to be explicitly omitted',
-    );
-  }
-
-  protected async authHeaders(opts: FinalRequestOptions): Promise<NullableHeaders | undefined> {
-    if (this.geminiAPIKey == null) {
-      return undefined;
-    }
-    return buildHeaders([{ 'x-goog-api-key': this.geminiAPIKey }]);
+    return;
   }
 
   /**
@@ -720,7 +712,6 @@ export class Jocall3 {
         ...(options.timeout ? { 'X-Stainless-Timeout': String(Math.trunc(options.timeout / 1000)) } : {}),
         ...getPlatformHeaders(),
       },
-      await this.authHeaders(options),
       this._options.defaultHeaders,
       bodyHeaders,
       options.headers,
@@ -860,8 +851,5 @@ export declare namespace Jocall3 {
 
   export { Payments as Payments };
 
-  export {
-    Sustainability as Sustainability,
-    type SustainabilityGetFootprintResponse as SustainabilityGetFootprintResponse,
-  };
+  export { Sustainability as Sustainability };
 }
