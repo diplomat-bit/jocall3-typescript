@@ -15,7 +15,7 @@ export class Biometrics extends APIResource {
    *   await client.users.me.biometrics.retrieveStatus();
    * ```
    */
-  retrieveStatus(options?: RequestOptions): APIPromise<unknown> {
+  retrieveStatus(options?: RequestOptions): APIPromise<BiometricRetrieveStatusResponse> {
     return this._client.get('/users/me/biometrics', options);
   }
 
@@ -25,10 +25,15 @@ export class Biometrics extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.users.me.biometrics.verify();
+   * const response = await client.users.me.biometrics.verify({
+   *   biometricSignature:
+   *     'base64encoded_one_time_fingerprint_proof',
+   *   biometricType: 'fingerprint',
+   *   deviceId: 'dev_mobile_android_ddeeff',
+   * });
    * ```
    */
-  verify(body: BiometricVerifyParams, options?: RequestOptions): APIPromise<unknown> {
+  verify(body: BiometricVerifyParams, options?: RequestOptions): APIPromise<BiometricVerifyResponse> {
     return this._client.post('/users/me/biometrics/verify', { body, ...options });
   }
 }
@@ -36,11 +41,37 @@ export class Biometrics extends APIResource {
 /**
  * Current biometric enrollment status for a user.
  */
-export type BiometricRetrieveStatusResponse = unknown;
+export interface BiometricRetrieveStatusResponse {
+  biometricsEnrolled: boolean;
 
-export type BiometricVerifyResponse = unknown;
+  enrolledBiometrics: Array<BiometricRetrieveStatusResponse.EnrolledBiometric>;
 
-export interface BiometricVerifyParams {}
+  lastUsed?: string;
+}
+
+export namespace BiometricRetrieveStatusResponse {
+  export interface EnrolledBiometric {
+    deviceId?: string;
+
+    enrollmentDate?: string;
+
+    type?: string;
+  }
+}
+
+export interface BiometricVerifyResponse {
+  message?: string;
+
+  verificationStatus?: string;
+}
+
+export interface BiometricVerifyParams {
+  biometricSignature: string;
+
+  biometricType: string;
+
+  deviceId: string;
+}
 
 export declare namespace Biometrics {
   export {
