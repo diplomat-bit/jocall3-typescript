@@ -18,20 +18,4 @@ describe('resource marketplace', () => {
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
   });
-
-  test('listProducts: request options and params are passed correctly', async () => {
-    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
-    await expect(
-      client.marketplace.listProducts(
-        {
-          aiPersonalizationLevel: 'aiPersonalizationLevel',
-          category: 'category',
-          limit: 0,
-          minRating: 0,
-          offset: 0,
-        },
-        { path: '/_stainless_unknown_path' },
-      ),
-    ).rejects.toThrow(Jocall3.NotFoundError);
-  });
 });

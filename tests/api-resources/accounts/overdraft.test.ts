@@ -8,8 +8,8 @@ const client = new Jocall3({
 });
 
 describe('resource overdraft', () => {
-  test('update', async () => {
-    const responsePromise = client.accounts.overdraft.update('acc_chase_checking_4567');
+  test('retrieveSettings', async () => {
+    const responsePromise = client.accounts.overdraft.retrieveSettings('accountId');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -19,21 +19,25 @@ describe('resource overdraft', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('update: request options and params are passed correctly', async () => {
+  test('updateSettings', async () => {
+    const responsePromise = client.accounts.overdraft.updateSettings('accountId');
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  test('updateSettings: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
-      client.accounts.overdraft.update('acc_chase_checking_4567', {}, { path: '/_stainless_unknown_path' }),
+      client.accounts.overdraft.updateSettings(
+        'accountId',
+        { enabled: true, limit: 0 },
+        { path: '/_stainless_unknown_path' },
+      ),
     ).rejects.toThrow(Jocall3.NotFoundError);
-  });
-
-  test('get', async () => {
-    const responsePromise = client.accounts.overdraft.get('acc_chase_checking_4567');
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
   });
 });

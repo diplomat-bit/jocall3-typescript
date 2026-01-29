@@ -8,8 +8,8 @@ const client = new Jocall3({
 });
 
 describe('resource sustainability', () => {
-  test('getFootprint', async () => {
-    const responsePromise = client.sustainability.getFootprint();
+  test('retrieveCarbonFootprint', async () => {
+    const responsePromise = client.sustainability.retrieveCarbonFootprint();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
