@@ -33,9 +33,21 @@ export namespace SecurityRetrieveLogResponse {
 
     ipAddress?: string;
 
-    location?: unknown;
+    location?: Data.Location;
 
     timestamp?: string;
+  }
+
+  export namespace Data {
+    export interface Location {
+      city?: string;
+
+      country?: string;
+
+      latitude?: number;
+
+      longitude?: number;
+    }
   }
 }
 

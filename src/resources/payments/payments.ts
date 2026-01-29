@@ -6,7 +6,12 @@ import { Domestic, DomesticACHParams, DomesticRtpParams, DomesticWireParams } fr
 import * as FxAPI from './fx';
 import { Fx, FxBookDealParams, FxConvertParams, FxGetRatesParams, FxGetRatesResponse } from './fx';
 import * as InternationalAPI from './international';
-import { International, InternationalSepaParams, InternationalSwiftParams } from './international';
+import {
+  International,
+  InternationalGetStatusResponse,
+  InternationalSepaParams,
+  InternationalSwiftParams,
+} from './international';
 import { APIPromise } from '../../core/api-promise';
 import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
@@ -55,6 +60,7 @@ export declare namespace Payments {
 
   export {
     International as International,
+    type InternationalGetStatusResponse as InternationalGetStatusResponse,
     type InternationalSepaParams as InternationalSepaParams,
     type InternationalSwiftParams as InternationalSwiftParams,
   };

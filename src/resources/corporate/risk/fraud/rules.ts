@@ -4,6 +4,7 @@ import { APIResource } from '../../../../core/resource';
 import { APIPromise } from '../../../../core/api-promise';
 import { buildHeaders } from '../../../../internal/headers';
 import { RequestOptions } from '../../../../internal/request-options';
+import { path } from '../../../../internal/utils/path';
 
 export class Rules extends APIResource {
   /**
@@ -19,6 +20,26 @@ export class Rules extends APIResource {
    */
   create(body: RuleCreateParams, options?: RequestOptions): APIPromise<void> {
     return this._client.post('/corporate/risk/fraud/rules', {
+      body,
+      ...options,
+      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+    });
+  }
+
+  /**
+   * Update a fraud rule
+   *
+   * @example
+   * ```ts
+   * await client.corporate.risk.fraud.rules.update('ruleId');
+   * ```
+   */
+  update(
+    ruleID: string,
+    body: RuleUpdateParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<void> {
+    return this._client.put(path`/corporate/risk/fraud/rules/${ruleID}`, {
       body,
       ...options,
       headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
@@ -49,6 +70,16 @@ export interface RuleCreateParams {
   name: string;
 }
 
+export interface RuleUpdateParams {
+  action?: string;
+
+  name?: string;
+}
+
 export declare namespace Rules {
-  export { type RuleListResponse as RuleListResponse, type RuleCreateParams as RuleCreateParams };
+  export {
+    type RuleListResponse as RuleListResponse,
+    type RuleCreateParams as RuleCreateParams,
+    type RuleUpdateParams as RuleUpdateParams,
+  };
 }

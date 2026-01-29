@@ -8,6 +8,7 @@ import { SmartContractDeployParams, SmartContracts } from './smart-contracts';
 import * as TransactionsAPI from './transactions';
 import {
   TransactionBridgeChainParams,
+  TransactionInitiateParams,
   TransactionSendCryptoParams,
   TransactionSendCryptoResponse,
   TransactionSwapTokensParams,
@@ -73,6 +74,7 @@ export declare namespace Web3 {
     Transactions as Transactions,
     type TransactionSendCryptoResponse as TransactionSendCryptoResponse,
     type TransactionBridgeChainParams as TransactionBridgeChainParams,
+    type TransactionInitiateParams as TransactionInitiateParams,
     type TransactionSendCryptoParams as TransactionSendCryptoParams,
     type TransactionSwapTokensParams as TransactionSwapTokensParams,
   };

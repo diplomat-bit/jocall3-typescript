@@ -110,33 +110,23 @@ export interface AccountRetrieveResponse {
 
   currentBalance: number;
 
+  institutionName: string;
+
   type: string;
 
   availableBalance?: number;
 
-  institutionName?: string;
-
   lastUpdated?: string;
 
   name?: string;
-
-  projectedCashFlow?: AccountRetrieveResponse.ProjectedCashFlow;
-}
-
-export namespace AccountRetrieveResponse {
-  export interface ProjectedCashFlow {
-    confidenceScore?: number;
-
-    days30?: number;
-  }
 }
 
 export interface AccountListResponse {
-  data?: Array<AccountListResponse.Data>;
+  data: Array<AccountListResponse.Data>;
+
+  total: number;
 
   nextOffset?: number;
-
-  total?: number;
 }
 
 export namespace AccountListResponse {
@@ -147,25 +137,15 @@ export namespace AccountListResponse {
 
     currentBalance: number;
 
+    institutionName: string;
+
     type: string;
 
     availableBalance?: number;
 
-    institutionName?: string;
-
     lastUpdated?: string;
 
     name?: string;
-
-    projectedCashFlow?: Data.ProjectedCashFlow;
-  }
-
-  export namespace Data {
-    export interface ProjectedCashFlow {
-      confidenceScore?: number;
-
-      days30?: number;
-    }
   }
 }
 
@@ -182,25 +162,15 @@ export interface AccountOpenResponse {
 
   currentBalance: number;
 
+  institutionName: string;
+
   type: string;
 
   availableBalance?: number;
 
-  institutionName?: string;
-
   lastUpdated?: string;
 
   name?: string;
-
-  projectedCashFlow?: AccountOpenResponse.ProjectedCashFlow;
-}
-
-export namespace AccountOpenResponse {
-  export interface ProjectedCashFlow {
-    confidenceScore?: number;
-
-    days30?: number;
-  }
 }
 
 export interface AccountListParams {
