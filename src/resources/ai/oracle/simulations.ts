@@ -7,14 +7,13 @@ import { path } from '../../../internal/utils/path';
 
 export class Simulations extends APIResource {
   /**
-   * Retrieves the full, detailed results of a specific financial simulation by its
-   * ID.
+   * Get Specific Simulation Result
    *
    * @example
    * ```ts
    * const simulation =
    *   await client.ai.oracle.simulations.retrieve(
-   *     'sim_oracle-growth-2024-xyz',
+   *     'simulationId',
    *   );
    * ```
    */
@@ -23,8 +22,7 @@ export class Simulations extends APIResource {
   }
 
   /**
-   * Retrieves a list of all financial simulations previously run by the user,
-   * including their status and summaries.
+   * List All Past Simulations
    *
    * @example
    * ```ts
@@ -32,40 +30,56 @@ export class Simulations extends APIResource {
    *   await client.ai.oracle.simulations.list();
    * ```
    */
-  list(query: SimulationListParams | null | undefined = {}, options?: RequestOptions): APIPromise<unknown> {
-    return this._client.get('/ai/oracle/simulations', { query, ...options });
+  list(options?: RequestOptions): APIPromise<SimulationListResponse> {
+    return this._client.get('/ai/oracle/simulations', options);
   }
 }
 
-export type SimulationRetrieveResponse = SimulationRetrieveResponse.RiskAnalysis | unknown;
+export interface SimulationRetrieveResponse {
+  overallSummary: string;
+
+  scenarioResults: Array<SimulationRetrieveResponse.ScenarioResult>;
+
+  simulationId: string;
+}
 
 export namespace SimulationRetrieveResponse {
-  export interface RiskAnalysis {
-    /**
-     * AI-driven risk assessment of the simulated scenario.
-     */
-    riskAnalysis?: unknown;
+  export interface ScenarioResult {
+    finalNetWorth?: number;
+
+    narrative?: string;
+
+    scenarioName?: string;
   }
 }
 
-export type SimulationListResponse = unknown;
+export interface SimulationListResponse {
+  data?: Array<SimulationListResponse.Data>;
+}
 
-export interface SimulationListParams {
-  /**
-   * Maximum number of items to return in a single page.
-   */
-  limit?: number;
+export namespace SimulationListResponse {
+  export interface Data {
+    overallSummary: string;
 
-  /**
-   * Number of items to skip before starting to collect the result set.
-   */
-  offset?: number;
+    scenarioResults: Array<Data.ScenarioResult>;
+
+    simulationId: string;
+  }
+
+  export namespace Data {
+    export interface ScenarioResult {
+      finalNetWorth?: number;
+
+      narrative?: string;
+
+      scenarioName?: string;
+    }
+  }
 }
 
 export declare namespace Simulations {
   export {
     type SimulationRetrieveResponse as SimulationRetrieveResponse,
     type SimulationListResponse as SimulationListResponse,
-    type SimulationListParams as SimulationListParams,
   };
 }

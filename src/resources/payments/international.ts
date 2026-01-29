@@ -2,29 +2,52 @@
 
 import { APIResource } from '../../core/resource';
 import { APIPromise } from '../../core/api-promise';
+import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
-import { path } from '../../internal/utils/path';
 
 export class International extends APIResource {
   /**
-   * Retrieves the current processing status and details of an initiated
-   * international payment.
-   *
-   * @example
-   * ```ts
-   * const response =
-   *   await client.payments.international.getStatus(
-   *     'int_pmt_xyz7890',
-   *   );
-   * ```
+   * EU SEPA Credit Transfer
    */
-  getStatus(paymentID: string, options?: RequestOptions): APIPromise<unknown> {
-    return this._client.get(path`/payments/international/${paymentID}/status`, options);
+  sepa(body: InternationalSepaParams, options?: RequestOptions): APIPromise<void> {
+    return this._client.post('/payments/international/sepa', {
+      body,
+      ...options,
+      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+    });
+  }
+
+  /**
+   * Global SWIFT Transaction
+   */
+  swift(body: InternationalSwiftParams, options?: RequestOptions): APIPromise<void> {
+    return this._client.post('/payments/international/swift', {
+      body,
+      ...options,
+      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+    });
   }
 }
 
-export type InternationalGetStatusResponse = unknown;
+export interface InternationalSepaParams {
+  amount: number;
+
+  iban: string;
+}
+
+export interface InternationalSwiftParams {
+  amount: number;
+
+  bic: string;
+
+  currency: string;
+
+  iban: string;
+}
 
 export declare namespace International {
-  export { type InternationalGetStatusResponse as InternationalGetStatusResponse };
+  export {
+    type InternationalSepaParams as InternationalSepaParams,
+    type InternationalSwiftParams as InternationalSwiftParams,
+  };
 }

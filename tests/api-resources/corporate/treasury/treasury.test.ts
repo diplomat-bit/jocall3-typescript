@@ -2,12 +2,14 @@
 
 import Jocall3 from 'jocall3-node';
 
-const client = new Jocall3({ baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010' });
+const client = new Jocall3({
+  apiKey: 'My API Key',
+  baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
+});
 
-describe('resource anomalies', () => {
-  // Prism tests are disabled
-  test.skip('list', async () => {
-    const responsePromise = client.corporate.anomalies.list();
+describe('resource treasury', () => {
+  test('forecastCashFlow', async () => {
+    const responsePromise = client.corporate.treasury.forecastCashFlow();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -17,28 +19,15 @@ describe('resource anomalies', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
-  test.skip('list: request options and params are passed correctly', async () => {
+  test('forecastCashFlow: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
-      client.corporate.anomalies.list(
-        {
-          endDate: 'endDate',
-          entityType: 'entityType',
-          limit: 0,
-          offset: 0,
-          severity: 'severity',
-          startDate: 'startDate',
-          status: 'status',
-        },
-        { path: '/_stainless_unknown_path' },
-      ),
+      client.corporate.treasury.forecastCashFlow({ horizonDays: 0 }, { path: '/_stainless_unknown_path' }),
     ).rejects.toThrow(Jocall3.NotFoundError);
   });
 
-  // Prism tests are disabled
-  test.skip('updateStatus', async () => {
-    const responsePromise = client.corporate.anomalies.updateStatus('anom_risk-2024-07-21-D1E2F3', {});
+  test('manageLiquidity', async () => {
+    const responsePromise = client.corporate.treasury.manageLiquidity();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -46,5 +35,15 @@ describe('resource anomalies', () => {
     const dataAndResponse = await responsePromise.withResponse();
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  test('manageLiquidity: request options and params are passed correctly', async () => {
+    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
+    await expect(
+      client.corporate.treasury.manageLiquidity(
+        { sweepExcess: true, targetReserve: 0 },
+        { path: '/_stainless_unknown_path' },
+      ),
+    ).rejects.toThrow(Jocall3.NotFoundError);
   });
 });
