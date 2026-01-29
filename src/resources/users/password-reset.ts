@@ -6,7 +6,17 @@ import { RequestOptions } from '../../internal/request-options';
 
 export class PasswordReset extends APIResource {
   /**
-   * Confirm Password Reset with Code
+   * Confirms the password reset using the received verification code and sets a new
+   * password.
+   *
+   * @example
+   * ```ts
+   * const response = await client.users.passwordReset.confirm({
+   *   identifier: 'reset.user@example.com',
+   *   newPassword: 'MyNewStrongPassword@789',
+   *   verificationCode: '654321',
+   * });
+   * ```
    */
   confirm(
     body: PasswordResetConfirmParams,
@@ -16,7 +26,15 @@ export class PasswordReset extends APIResource {
   }
 
   /**
-   * Initiate Password Reset Flow
+   * Starts the password reset flow by sending a verification code or link to the
+   * user's registered email or phone.
+   *
+   * @example
+   * ```ts
+   * const response = await client.users.passwordReset.initiate({
+   *   identifier: 'reset.user@example.com',
+   * });
+   * ```
    */
   initiate(
     body: PasswordResetInitiateParams,
@@ -39,9 +57,6 @@ export interface PasswordResetConfirmParams {
 
   newPassword: string;
 
-  /**
-   * The 6-digit code sent to user
-   */
   verificationCode: string;
 }
 

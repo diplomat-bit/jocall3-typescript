@@ -19,22 +19,15 @@ describe('resource accounts', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('close', async () => {
-    const responsePromise = client.accounts.close('accountId');
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
+  test('list: request options and params are passed correctly', async () => {
+    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
+    await expect(
+      client.accounts.list({ limit: 0, offset: 0 }, { path: '/_stainless_unknown_path' }),
+    ).rejects.toThrow(Jocall3.NotFoundError);
   });
 
   test('link: only required params', async () => {
-    const responsePromise = client.accounts.link({
-      institutionId: 'institutionId',
-      publicToken: 'publicToken',
-    });
+    const responsePromise = client.accounts.link({ countryCode: 'US', institutionName: 'Bank of America' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -45,38 +38,11 @@ describe('resource accounts', () => {
   });
 
   test('link: required and optional params', async () => {
-    const response = await client.accounts.link({
-      institutionId: 'institutionId',
-      publicToken: 'publicToken',
-    });
-  });
-
-  test('open: only required params', async () => {
-    const responsePromise = client.accounts.open({
-      currency: 'USD',
-      initialDeposit: 0,
-      productType: 'quantum_checking',
-    });
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  test('open: required and optional params', async () => {
-    const response = await client.accounts.open({
-      currency: 'USD',
-      initialDeposit: 0,
-      productType: 'quantum_checking',
-      owners: ['string'],
-    });
+    const response = await client.accounts.link({ countryCode: 'US', institutionName: 'Bank of America' });
   });
 
   test('retrieveDetails', async () => {
-    const responsePromise = client.accounts.retrieveDetails('accountId');
+    const responsePromise = client.accounts.retrieveDetails('acc_chase_checking_4567');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;

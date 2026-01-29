@@ -2,7 +2,7 @@
 
 import { APIResource } from '../../../core/resource';
 import * as ToolsAPI from './tools';
-import { ToolListResponse, Tools } from './tools';
+import { ToolListParams, ToolListResponse, Tools } from './tools';
 import { APIPromise } from '../../../core/api-promise';
 import { RequestOptions } from '../../../internal/request-options';
 
@@ -10,40 +10,65 @@ export class Advisor extends APIResource {
   tools: ToolsAPI.Tools = new ToolsAPI.Tools(this._client);
 
   /**
-   * The primary orchestration point. Connects Postman Data to Gemini Logic.
+   * Initiates or continues a sophisticated conversation with Quantum, the AI
+   * Advisor. Quantum can provide advanced financial insights, execute complex tasks
+   * via an expanding suite of intelligent tools, and learn from user interactions to
+   * offer hyper-personalized guidance.
+   *
+   * @example
+   * ```ts
+   * const response = await client.ai.advisor.chat();
+   * ```
    */
-  chat(body: AdvisorChatParams, options?: RequestOptions): APIPromise<AdvisorChatResponse> {
+  chat(body: AdvisorChatParams | null | undefined = {}, options?: RequestOptions): APIPromise<unknown> {
     return this._client.post('/ai/advisor/chat', { body, ...options });
   }
 
   /**
-   * Get Full Chat Transcript
+   * Fetches the full conversation history with the Quantum AI Advisor for a given
+   * session or user.
+   *
+   * @example
+   * ```ts
+   * const response = await client.ai.advisor.retrieveHistory();
+   * ```
    */
-  retrieveHistory(options?: RequestOptions): APIPromise<AdvisorRetrieveHistoryResponse> {
-    return this._client.get('/ai/advisor/chat/history', options);
+  retrieveHistory(
+    query: AdvisorRetrieveHistoryParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<unknown> {
+    return this._client.get('/ai/advisor/chat/history', { query, ...options });
   }
 }
 
-export interface AdvisorChatResponse {
-  reply?: string;
+export type AdvisorChatResponse = unknown;
 
-  sessionId?: string;
-
-  suggestedActions?: Array<unknown>;
-}
-
-export interface AdvisorRetrieveHistoryResponse {
-  messages?: Array<unknown>;
-}
+export type AdvisorRetrieveHistoryResponse = unknown;
 
 export interface AdvisorChatParams {
-  message: string;
+  /**
+   * Optional: The output from a tool function that the AI previously requested to be
+   * executed.
+   */
+  functionResponse?: unknown;
+}
 
-  contextAccountIds?: Array<string>;
+export interface AdvisorRetrieveHistoryParams {
+  /**
+   * Maximum number of items to return in a single page.
+   */
+  limit?: number;
 
-  mode?: string;
+  /**
+   * Number of items to skip before starting to collect the result set.
+   */
+  offset?: number;
 
-  stream?: boolean;
+  /**
+   * Optional: Filter history by a specific session ID. If omitted, recent
+   * conversations will be returned.
+   */
+  sessionId?: string;
 }
 
 Advisor.Tools = Tools;
@@ -53,7 +78,8 @@ export declare namespace Advisor {
     type AdvisorChatResponse as AdvisorChatResponse,
     type AdvisorRetrieveHistoryResponse as AdvisorRetrieveHistoryResponse,
     type AdvisorChatParams as AdvisorChatParams,
+    type AdvisorRetrieveHistoryParams as AdvisorRetrieveHistoryParams,
   };
 
-  export { Tools as Tools, type ToolListResponse as ToolListResponse };
+  export { Tools as Tools, type ToolListResponse as ToolListResponse, type ToolListParams as ToolListParams };
 }

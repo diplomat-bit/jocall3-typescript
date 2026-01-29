@@ -9,7 +9,7 @@ const client = new Jocall3({
 
 describe('resource overdraft', () => {
   test('retrieveSettings', async () => {
-    const responsePromise = client.accounts.overdraft.retrieveSettings('accountId');
+    const responsePromise = client.accounts.overdraft.retrieveSettings('acc_chase_checking_4567');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -20,7 +20,7 @@ describe('resource overdraft', () => {
   });
 
   test('updateSettings', async () => {
-    const responsePromise = client.accounts.overdraft.updateSettings('accountId');
+    const responsePromise = client.accounts.overdraft.updateSettings('acc_chase_checking_4567');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -34,8 +34,12 @@ describe('resource overdraft', () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
       client.accounts.overdraft.updateSettings(
-        'accountId',
-        { enabled: true, limit: 0 },
+        'acc_chase_checking_4567',
+        {
+          enabled: false,
+          feePreference: 'decline_if_over_limit',
+          linkToSavings: false,
+        },
         { path: '/_stainless_unknown_path' },
       ),
     ).rejects.toThrow(Jocall3.NotFoundError);
