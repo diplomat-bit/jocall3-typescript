@@ -8,8 +8,8 @@ const client = new Jocall3({
 });
 
 describe('resource transactions', () => {
-  test('listPending', async () => {
-    const responsePromise = client.accounts.transactions.listPending('acc_chase_checking_4567');
+  test('listArchived', async () => {
+    const responsePromise = client.accounts.transactions.listArchived('accountId');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -19,14 +19,25 @@ describe('resource transactions', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('listPending: request options and params are passed correctly', async () => {
+  test('listArchived: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
-      client.accounts.transactions.listPending(
-        'acc_chase_checking_4567',
-        { limit: 0, offset: 0 },
+      client.accounts.transactions.listArchived(
+        'accountId',
+        { year: 0 },
         { path: '/_stainless_unknown_path' },
       ),
     ).rejects.toThrow(Jocall3.NotFoundError);
+  });
+
+  test('listPending', async () => {
+    const responsePromise = client.accounts.transactions.listPending('accountId');
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
   });
 });

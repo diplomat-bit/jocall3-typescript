@@ -2,38 +2,33 @@
 
 import { APIResource } from '../../../core/resource';
 import { APIPromise } from '../../../core/api-promise';
+import { buildHeaders } from '../../../internal/headers';
 import { RequestOptions } from '../../../internal/request-options';
+import { path } from '../../../internal/utils/path';
 
 export class Tools extends APIResource {
   /**
-   * Retrieves a dynamic manifest of all integrated AI tools that Quantum can invoke
-   * and execute, providing details on their capabilities, parameters, and access
-   * requirements.
-   *
-   * @example
-   * ```ts
-   * const tools = await client.ai.advisor.tools.list();
-   * ```
+   * List AI-Executable Financial Tools
    */
-  list(query: ToolListParams | null | undefined = {}, options?: RequestOptions): APIPromise<unknown> {
-    return this._client.get('/ai/advisor/tools', { query, ...options });
+  list(options?: RequestOptions): APIPromise<ToolListResponse> {
+    return this._client.get('/ai/advisor/tools', options);
+  }
+
+  /**
+   * Grant AI Execution Permission for Tool
+   */
+  enable(toolID: string, options?: RequestOptions): APIPromise<void> {
+    return this._client.post(path`/ai/advisor/tools/${toolID}/enable`, {
+      ...options,
+      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+    });
   }
 }
 
-export type ToolListResponse = unknown;
-
-export interface ToolListParams {
-  /**
-   * Maximum number of items to return in a single page.
-   */
-  limit?: number;
-
-  /**
-   * Number of items to skip before starting to collect the result set.
-   */
-  offset?: number;
+export interface ToolListResponse {
+  data?: Array<unknown>;
 }
 
 export declare namespace Tools {
-  export { type ToolListResponse as ToolListResponse, type ToolListParams as ToolListParams };
+  export { type ToolListResponse as ToolListResponse };
 }

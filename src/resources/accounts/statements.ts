@@ -2,58 +2,75 @@
 
 import { APIResource } from '../../core/resource';
 import { APIPromise } from '../../core/api-promise';
+import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
 export class Statements extends APIResource {
   /**
-   * Fetches digital statements for a specific account, allowing filtering by date
-   * range and format.
+   * List Available Statements
    *
    * @example
    * ```ts
    * const statements = await client.accounts.statements.list(
-   *   'acc_chase_checking_4567',
+   *   'accountId',
    * );
    * ```
    */
-  list(
-    accountID: string,
-    query: StatementListParams | null | undefined = {},
+  list(accountID: string, options?: RequestOptions): APIPromise<StatementListResponse> {
+    return this._client.get(path`/accounts/${accountID}/statements`, options);
+  }
+
+  /**
+   * Download Statement PDF
+   *
+   * @example
+   * ```ts
+   * const response =
+   *   await client.accounts.statements.downloadPdf(
+   *     'statementId',
+   *     { accountId: 'accountId' },
+   *   );
+   *
+   * const content = await response.blob();
+   * console.log(content);
+   * ```
+   */
+  downloadPdf(
+    statementID: string,
+    params: StatementDownloadPdfParams,
     options?: RequestOptions,
-  ): APIPromise<StatementListResponse> {
-    return this._client.get(path`/accounts/${accountID}/statements`, { query, ...options });
+  ): APIPromise<Response> {
+    const { accountId } = params;
+    return this._client.get(path`/accounts/${accountId}/statements/${statementID}/pdf`, {
+      ...options,
+      headers: buildHeaders([{ Accept: 'application/pdf' }, options?.headers]),
+      __binaryResponse: true,
+    });
   }
 }
 
 export interface StatementListResponse {
-  /**
-   * Map of available download URLs for different formats.
-   */
-  downloadUrls: unknown;
+  data?: Array<StatementListResponse.Data>;
 }
 
-export interface StatementListParams {
-  /**
-   * Desired format for the statement. Use 'application/json' Accept header for
-   * download links.
-   */
-  format?: string;
+export namespace StatementListResponse {
+  export interface Data {
+    id?: string;
 
-  /**
-   * Month for the statement (1-12).
-   */
-  month?: number;
+    issueDate?: string;
 
-  /**
-   * Year for the statement.
-   */
-  year?: number;
+    period?: string;
+  }
+}
+
+export interface StatementDownloadPdfParams {
+  accountId: string;
 }
 
 export declare namespace Statements {
   export {
     type StatementListResponse as StatementListResponse,
-    type StatementListParams as StatementListParams,
+    type StatementDownloadPdfParams as StatementDownloadPdfParams,
   };
 }

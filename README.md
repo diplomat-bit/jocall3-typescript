@@ -28,9 +28,11 @@ const client = new Jocall3({
 });
 
 const response = await client.ai.oracle.simulate.runAdvanced({
-  globalEconomicFactors: { volatility_index: 'VIX_HIGHER_30', geopolitical_tension: 'high' },
-  personalAssumptions: { stop_loss_triggered: true },
+  prompt: 'Analyze systemic risk of a 20% BTC drop.',
+  scenarios: [{ name: 'Crypto Black Swan', description: 'Extreme market volatility scenario.' }],
 });
+
+console.log(response.simulationId);
 ```
 
 ### Request & Response types
@@ -46,10 +48,48 @@ const client = new Jocall3({
   environment: 'sandbox', // or 'production' | 'gemini_direct'; defaults to 'production'
 });
 
-const response: Jocall3.UserRegisterResponse = await client.users.register();
+const params: Jocall3.UserRegisterParams = {
+  email: 'user@quantum-ledger.com',
+  name: 'Standard User',
+  password: 'DefaultPassword123!',
+};
+const response: Jocall3.UserRegisterResponse = await client.users.register(params);
 ```
 
 Documentation for each method, request param, and response field are available in docstrings and will appear on hover in most modern editors.
+
+## File uploads
+
+Request parameters that correspond to file uploads can be passed in many different forms:
+
+- `File` (or an object with the same structure)
+- a `fetch` `Response` (or an object with the same structure)
+- an `fs.ReadStream`
+- the return value of our `toFile` helper
+
+```ts
+import fs from 'fs';
+import Jocall3, { toFile } from 'jocall3-node';
+
+const client = new Jocall3();
+
+// If you have access to Node `fs` we recommend using `fs.createReadStream()`:
+await client.system.verification.verifyDocument({ file: fs.createReadStream('/path/to/file') });
+
+// Or if you have the web `File` API you can pass a `File` instance:
+await client.system.verification.verifyDocument({ file: new File(['my bytes'], 'file') });
+
+// You can also pass a `fetch` `Response`:
+await client.system.verification.verifyDocument({ file: await fetch('https://somesite/file') });
+
+// Finally, if none of the above are convenient, you can use our `toFile` helper:
+await client.system.verification.verifyDocument({
+  file: await toFile(Buffer.from('my bytes'), 'file'),
+});
+await client.system.verification.verifyDocument({
+  file: await toFile(new Uint8Array([0, 1, 2]), 'file'),
+});
+```
 
 ## Handling errors
 
@@ -59,15 +99,21 @@ a subclass of `APIError` will be thrown:
 
 <!-- prettier-ignore -->
 ```ts
-const response = await client.users.register().catch(async (err) => {
-  if (err instanceof Jocall3.APIError) {
-    console.log(err.status); // 400
-    console.log(err.name); // BadRequestError
-    console.log(err.headers); // {server: 'nginx', ...}
-  } else {
-    throw err;
-  }
-});
+const response = await client.users
+  .register({
+    email: 'user@quantum-ledger.com',
+    name: 'Standard User',
+    password: 'DefaultPassword123!',
+  })
+  .catch(async (err) => {
+    if (err instanceof Jocall3.APIError) {
+      console.log(err.status); // 400
+      console.log(err.name); // BadRequestError
+      console.log(err.headers); // {server: 'nginx', ...}
+    } else {
+      throw err;
+    }
+  });
 ```
 
 Error codes are as follows:
@@ -100,6 +146,10 @@ const client = new Jocall3({
 
 // Or, configure per-request:
 await client.users.register({
+  email: 'user@quantum-ledger.com',
+  name: 'Standard User',
+  password: 'DefaultPassword123!',
+}, {
   maxRetries: 5,
 });
 ```
@@ -117,6 +167,10 @@ const client = new Jocall3({
 
 // Override per-request:
 await client.users.register({
+  email: 'user@quantum-ledger.com',
+  name: 'Standard User',
+  password: 'DefaultPassword123!',
+}, {
   timeout: 5 * 1000,
 });
 ```
@@ -139,13 +193,25 @@ Unlike `.asResponse()` this method consumes the body, returning once it is parse
 ```ts
 const client = new Jocall3();
 
-const response = await client.users.register().asResponse();
+const response = await client.users
+  .register({
+    email: 'user@quantum-ledger.com',
+    name: 'Standard User',
+    password: 'DefaultPassword123!',
+  })
+  .asResponse();
 console.log(response.headers.get('X-My-Header'));
 console.log(response.statusText); // access the underlying Response object
 
-const { data: response, response: raw } = await client.users.register().withResponse();
+const { data: response, response: raw } = await client.users
+  .register({
+    email: 'user@quantum-ledger.com',
+    name: 'Standard User',
+    password: 'DefaultPassword123!',
+  })
+  .withResponse();
 console.log(raw.headers.get('X-My-Header'));
-console.log(response.address);
+console.log(response.id);
 ```
 
 ### Logging
