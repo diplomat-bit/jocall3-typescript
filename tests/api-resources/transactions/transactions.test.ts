@@ -51,10 +51,8 @@ describe('resource transactions', () => {
   });
 
   // Prism tests are disabled
-  test.skip('addNotes: only required params', async () => {
-    const responsePromise = client.transactions.addNotes('txn_quantum-2024-07-21-A7B8C9', {
-      notes: 'This was a special coffee for a client meeting.',
-    });
+  test.skip('addNotes', async () => {
+    const responsePromise = client.transactions.addNotes('txn_quantum-2024-07-21-A7B8C9', {});
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -65,17 +63,8 @@ describe('resource transactions', () => {
   });
 
   // Prism tests are disabled
-  test.skip('addNotes: required and optional params', async () => {
-    const response = await client.transactions.addNotes('txn_quantum-2024-07-21-A7B8C9', {
-      notes: 'This was a special coffee for a client meeting.',
-    });
-  });
-
-  // Prism tests are disabled
-  test.skip('categorize: only required params', async () => {
-    const responsePromise = client.transactions.categorize('txn_quantum-2024-07-21-A7B8C9', {
-      category: 'Home > Groceries',
-    });
+  test.skip('categorize', async () => {
+    const responsePromise = client.transactions.categorize('txn_quantum-2024-07-21-A7B8C9', {});
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -83,14 +72,5 @@ describe('resource transactions', () => {
     const dataAndResponse = await responsePromise.withResponse();
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  // Prism tests are disabled
-  test.skip('categorize: required and optional params', async () => {
-    const response = await client.transactions.categorize('txn_quantum-2024-07-21-A7B8C9', {
-      category: 'Home > Groceries',
-      applyToFuture: true,
-      notes: 'Bulk purchase for party',
-    });
   });
 });

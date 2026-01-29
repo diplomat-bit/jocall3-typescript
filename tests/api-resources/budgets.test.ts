@@ -33,11 +33,7 @@ describe('resource budgets', () => {
   test.skip('update: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
-      client.budgets.update(
-        'budget_monthly_aug',
-        { alertThreshold: 85, totalAmount: 3200 },
-        { path: '/_stainless_unknown_path' },
-      ),
+      client.budgets.update('budget_monthly_aug', {}, { path: '/_stainless_unknown_path' }),
     ).rejects.toThrow(Jocall3.NotFoundError);
   });
 

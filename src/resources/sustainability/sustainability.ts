@@ -2,14 +2,32 @@
 
 import { APIResource } from '../../core/resource';
 import * as InvestmentsAPI from './investments';
-import { Investments } from './investments';
+import { InvestmentAnalyzeImpactResponse, Investments } from './investments';
+import { APIPromise } from '../../core/api-promise';
+import { RequestOptions } from '../../internal/request-options';
 
 export class Sustainability extends APIResource {
   investments: InvestmentsAPI.Investments = new InvestmentsAPI.Investments(this._client);
+
+  /**
+   * Generates a detailed report of the user's estimated carbon footprint based on
+   * transaction data, lifestyle choices, and AI-driven impact assessments, offering
+   * insights and reduction strategies.
+   */
+  getFootprint(options?: RequestOptions): APIPromise<unknown> {
+    return this._client.get('/sustainability/carbon-footprint', options);
+  }
 }
+
+export type SustainabilityGetFootprintResponse = unknown;
 
 Sustainability.Investments = Investments;
 
 export declare namespace Sustainability {
-  export { Investments as Investments };
+  export { type SustainabilityGetFootprintResponse as SustainabilityGetFootprintResponse };
+
+  export {
+    Investments as Investments,
+    type InvestmentAnalyzeImpactResponse as InvestmentAnalyzeImpactResponse,
+  };
 }
