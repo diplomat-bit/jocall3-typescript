@@ -2,40 +2,44 @@
 
 import { APIResource } from '../../../core/resource';
 import { APIPromise } from '../../../core/api-promise';
-import { buildHeaders } from '../../../internal/headers';
 import { RequestOptions } from '../../../internal/request-options';
 import { path } from '../../../internal/utils/path';
 
 export class Controls extends APIResource {
   /**
-   * Update Spending Limits & MCC Controls
+   * Updates the sophisticated spending controls, limits, and policy overrides for a
+   * specific corporate card, enabling real-time adjustments for security and budget
+   * adherence.
    *
    * @example
    * ```ts
-   * await client.corporate.cards.controls.update('cardId');
+   * const control =
+   *   await client.corporate.cards.controls.update(
+   *     'corp_card_xyz987654',
+   *   );
    * ```
    */
   update(
     cardID: string,
-    body: ControlUpdateParams | null | undefined = {},
+    body?: ControlUpdateParams | null | undefined,
     options?: RequestOptions,
-  ): APIPromise<void> {
-    return this._client.put(path`/corporate/cards/${cardID}/controls`, {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
+  ): APIPromise<ControlUpdateResponse> {
+    return this._client.put(path`/corporate/cards/${cardID}/controls`, { body, ...options });
   }
 }
 
-export interface ControlUpdateParams {
-  allowedCategories?: Array<string>;
-
-  geoRestriction?: Array<string>;
-
-  monthlyLimit?: number;
+export interface ControlUpdateResponse {
+  /**
+   * Granular spending controls for a corporate card.
+   */
+  controls: unknown;
 }
 
+export interface ControlUpdateParams {}
+
 export declare namespace Controls {
-  export { type ControlUpdateParams as ControlUpdateParams };
+  export {
+    type ControlUpdateResponse as ControlUpdateResponse,
+    type ControlUpdateParams as ControlUpdateParams,
+  };
 }

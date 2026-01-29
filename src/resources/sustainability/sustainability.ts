@@ -2,14 +2,9 @@
 
 import { APIResource } from '../../core/resource';
 import * as ImpactAPI from './impact';
-import {
-  Impact,
-  ImpactPortfolioAnalysisResponse,
-  ImpactProjectSearchParams,
-  ImpactProjectSearchResponse,
-} from './impact';
+import { Impact } from './impact';
 import * as OffsetsAPI from './offsets';
-import { OffsetPurchaseParams, OffsetRetireParams, Offsets } from './offsets';
+import { Offsets } from './offsets';
 import { APIPromise } from '../../core/api-promise';
 import { RequestOptions } from '../../internal/request-options';
 
@@ -18,32 +13,16 @@ export class Sustainability extends APIResource {
   impact: ImpactAPI.Impact = new ImpactAPI.Impact(this._client);
 
   /**
-   * Analysis of ledger data through Gemini to estimate CO2e output.
+   * Generates a detailed report of the user's estimated carbon footprint based on
+   * transaction data, lifestyle choices, and AI-driven impact assessments, offering
+   * insights and reduction strategies.
    */
-  getFootprint(options?: RequestOptions): APIPromise<SustainabilityGetFootprintResponse> {
+  getFootprint(options?: RequestOptions): APIPromise<unknown> {
     return this._client.get('/sustainability/carbon-footprint', options);
   }
 }
 
-export interface SustainabilityGetFootprintResponse {
-  period: string;
-
-  status: 'OPTIMAL' | 'HIGH_OUTPUT' | 'CRITICAL';
-
-  totalKgCO2e: number;
-
-  aiRecommendations?: Array<string>;
-
-  breakdown?: Array<SustainabilityGetFootprintResponse.Breakdown>;
-}
-
-export namespace SustainabilityGetFootprintResponse {
-  export interface Breakdown {
-    category?: string;
-
-    value?: number;
-  }
-}
+export type SustainabilityGetFootprintResponse = unknown;
 
 Sustainability.Offsets = Offsets;
 Sustainability.Impact = Impact;
@@ -51,16 +30,7 @@ Sustainability.Impact = Impact;
 export declare namespace Sustainability {
   export { type SustainabilityGetFootprintResponse as SustainabilityGetFootprintResponse };
 
-  export {
-    Offsets as Offsets,
-    type OffsetPurchaseParams as OffsetPurchaseParams,
-    type OffsetRetireParams as OffsetRetireParams,
-  };
+  export { Offsets as Offsets };
 
-  export {
-    Impact as Impact,
-    type ImpactPortfolioAnalysisResponse as ImpactPortfolioAnalysisResponse,
-    type ImpactProjectSearchResponse as ImpactProjectSearchResponse,
-    type ImpactProjectSearchParams as ImpactProjectSearchParams,
-  };
+  export { Impact as Impact };
 }

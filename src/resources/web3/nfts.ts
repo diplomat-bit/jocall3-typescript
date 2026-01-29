@@ -2,47 +2,38 @@
 
 import { APIResource } from '../../core/resource';
 import { APIPromise } from '../../core/api-promise';
-import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 
 export class NFTs extends APIResource {
   /**
-   * List NFT Collection
+   * Fetches a comprehensive list of Non-Fungible Tokens (NFTs) owned by the user
+   * across all connected wallets and supported blockchain networks, including
+   * metadata and market values.
    *
    * @example
    * ```ts
    * const nfts = await client.web3.nfts.list();
    * ```
    */
-  list(options?: RequestOptions): APIPromise<NFTListResponse> {
-    return this._client.get('/web3/nfts', options);
+  list(query: NFTListParams | null | undefined = {}, options?: RequestOptions): APIPromise<unknown> {
+    return this._client.get('/web3/nfts', { query, ...options });
   }
+}
+
+export type NFTListResponse = unknown;
+
+export interface NFTListParams {
+  /**
+   * Maximum number of items to return in a single page.
+   */
+  limit?: number;
 
   /**
-   * Mint Utility NFT
-   *
-   * @example
-   * ```ts
-   * await client.web3.nfts.mint({ metadataUri: 'metadataUri' });
-   * ```
+   * Number of items to skip before starting to collect the result set.
    */
-  mint(body: NFTMintParams, options?: RequestOptions): APIPromise<void> {
-    return this._client.post('/web3/nfts/mint', {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
-  }
-}
-
-export interface NFTListResponse {
-  data?: Array<unknown>;
-}
-
-export interface NFTMintParams {
-  metadataUri: string;
+  offset?: number;
 }
 
 export declare namespace NFTs {
-  export { type NFTListResponse as NFTListResponse, type NFTMintParams as NFTMintParams };
+  export { type NFTListResponse as NFTListResponse, type NFTListParams as NFTListParams };
 }

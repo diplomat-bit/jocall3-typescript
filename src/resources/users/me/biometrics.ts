@@ -2,74 +2,50 @@
 
 import { APIResource } from '../../../core/resource';
 import { APIPromise } from '../../../core/api-promise';
-import { buildHeaders } from '../../../internal/headers';
 import { RequestOptions } from '../../../internal/request-options';
 
 export class Biometrics extends APIResource {
   /**
-   * Remove All Biometric Data
+   * Retrieves the current status of biometric enrollments for the authenticated
+   * user.
+   *
+   * @example
+   * ```ts
+   * const response =
+   *   await client.users.me.biometrics.retrieveStatus();
+   * ```
    */
-  delete(options?: RequestOptions): APIPromise<void> {
-    return this._client.delete('/users/me/biometrics', {
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
-  }
-
-  /**
-   * Enroll New Biometric Signature
-   */
-  enroll(body: BiometricEnrollParams, options?: RequestOptions): APIPromise<void> {
-    return this._client.post('/users/me/biometrics/enroll', {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
-  }
-
-  /**
-   * Get Biometric Enrollment Status
-   */
-  retrieveStatus(options?: RequestOptions): APIPromise<BiometricRetrieveStatusResponse> {
+  retrieveStatus(options?: RequestOptions): APIPromise<unknown> {
     return this._client.get('/users/me/biometrics', options);
   }
 
   /**
-   * Verify Biometric Data for Sensitive Operations
+   * Performs real-time biometric verification to authorize sensitive actions or
+   * access protected resources, using a one-time biometric signature.
+   *
+   * @example
+   * ```ts
+   * const response = await client.users.me.biometrics.verify();
+   * ```
    */
-  verify(body: BiometricVerifyParams, options?: RequestOptions): APIPromise<BiometricVerifyResponse> {
+  verify(body: BiometricVerifyParams, options?: RequestOptions): APIPromise<unknown> {
     return this._client.post('/users/me/biometrics/verify', { body, ...options });
   }
 }
 
-export interface BiometricRetrieveStatusResponse {
-  biometricsEnrolled?: boolean;
+/**
+ * Current biometric enrollment status for a user.
+ */
+export type BiometricRetrieveStatusResponse = unknown;
 
-  lastUsed?: string;
-}
+export type BiometricVerifyResponse = unknown;
 
-export interface BiometricVerifyResponse {
-  verificationStatus?: string;
-}
-
-export interface BiometricEnrollParams {
-  biometricType: 'fingerprint' | 'facial_recognition';
-
-  /**
-   * Public key or hash of signature
-   */
-  signature: string;
-}
-
-export interface BiometricVerifyParams {
-  biometricSignature: string;
-}
+export interface BiometricVerifyParams {}
 
 export declare namespace Biometrics {
   export {
     type BiometricRetrieveStatusResponse as BiometricRetrieveStatusResponse,
     type BiometricVerifyResponse as BiometricVerifyResponse,
-    type BiometricEnrollParams as BiometricEnrollParams,
     type BiometricVerifyParams as BiometricVerifyParams,
   };
 }
