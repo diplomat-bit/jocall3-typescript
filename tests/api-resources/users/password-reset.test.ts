@@ -8,8 +8,12 @@ const client = new Jocall3({
 });
 
 describe('resource passwordReset', () => {
-  test('confirm', async () => {
-    const responsePromise = client.users.passwordReset.confirm({});
+  test('confirm: only required params', async () => {
+    const responsePromise = client.users.passwordReset.confirm({
+      identifier: 'identifier',
+      newPassword: 'newPassword',
+      verificationCode: 'verificationCode',
+    });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -19,8 +23,16 @@ describe('resource passwordReset', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('initiate', async () => {
-    const responsePromise = client.users.passwordReset.initiate({});
+  test('confirm: required and optional params', async () => {
+    const response = await client.users.passwordReset.confirm({
+      identifier: 'identifier',
+      newPassword: 'newPassword',
+      verificationCode: 'verificationCode',
+    });
+  });
+
+  test('initiate: only required params', async () => {
+    const responsePromise = client.users.passwordReset.initiate({ identifier: 'identifier' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -28,5 +40,9 @@ describe('resource passwordReset', () => {
     const dataAndResponse = await responsePromise.withResponse();
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  test('initiate: required and optional params', async () => {
+    const response = await client.users.passwordReset.initiate({ identifier: 'identifier' });
   });
 });

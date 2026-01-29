@@ -2,53 +2,62 @@
 
 import { APIResource } from '../../core/resource';
 import { APIPromise } from '../../core/api-promise';
+import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
 export class Overdraft extends APIResource {
   /**
-   * Updates the overdraft protection settings for a specific account, enabling or
-   * disabling protection and configuring preferences.
+   * Update Overdraft Settings
    *
    * @example
    * ```ts
-   * const overdraft = await client.accounts.overdraft.update(
-   *   'acc_chase_checking_4567',
-   * );
+   * await client.accounts.overdraft.update('accountId');
    * ```
    */
   update(
     accountID: string,
-    body?: OverdraftUpdateParams | null | undefined,
+    body: OverdraftUpdateParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<unknown> {
-    return this._client.put(path`/accounts/${accountID}/overdraft-settings`, { body, ...options });
+  ): APIPromise<void> {
+    return this._client.put(path`/accounts/${accountID}/overdraft-settings`, {
+      body,
+      ...options,
+      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+    });
   }
 
   /**
-   * Retrieves the current overdraft protection settings for a specific account.
+   * Get Overdraft Settings
    *
    * @example
    * ```ts
    * const overdraft = await client.accounts.overdraft.get(
-   *   'acc_chase_checking_4567',
+   *   'accountId',
    * );
    * ```
    */
-  get(accountID: string, options?: RequestOptions): APIPromise<unknown> {
+  get(accountID: string, options?: RequestOptions): APIPromise<OverdraftGetResponse> {
     return this._client.get(path`/accounts/${accountID}/overdraft-settings`, options);
   }
 }
 
-export type OverdraftUpdateResponse = unknown;
+export interface OverdraftGetResponse {
+  enabled?: boolean;
 
-export type OverdraftGetResponse = unknown;
+  feePreference?: string;
 
-export interface OverdraftUpdateParams {}
+  limit?: number;
+}
+
+export interface OverdraftUpdateParams {
+  enabled?: boolean;
+
+  limit?: number;
+}
 
 export declare namespace Overdraft {
   export {
-    type OverdraftUpdateResponse as OverdraftUpdateResponse,
     type OverdraftGetResponse as OverdraftGetResponse,
     type OverdraftUpdateParams as OverdraftUpdateParams,
   };
