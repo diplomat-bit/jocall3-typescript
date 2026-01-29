@@ -2,11 +2,10 @@
 
 import { APIResource } from '../../../core/resource';
 import * as PoolingAPI from './pooling';
-import { Pooling, PoolingConfigureParams } from './pooling';
+import { Pooling } from './pooling';
 import * as SweepingAPI from './sweeping';
-import { Sweeping, SweepingConfigureParams, SweepingExecuteParams } from './sweeping';
+import { Sweeping } from './sweeping';
 import { APIPromise } from '../../../core/api-promise';
-import { buildHeaders } from '../../../internal/headers';
 import { RequestOptions } from '../../../internal/request-options';
 
 export class Treasury extends APIResource {
@@ -14,25 +13,9 @@ export class Treasury extends APIResource {
   pooling: PoolingAPI.Pooling = new PoolingAPI.Pooling(this._client);
 
   /**
-   * Execute bulk payouts
-   *
-   * @example
-   * ```ts
-   * await client.corporate.treasury.bulkPayout({
-   *   payouts: [{}],
-   * });
-   * ```
-   */
-  bulkPayout(body: TreasuryBulkPayoutParams, options?: RequestOptions): APIPromise<void> {
-    return this._client.post('/corporate/treasury/bulk-payouts', {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
-  }
-
-  /**
-   * Corporate Cash Flow Projection
+   * Retrieves an advanced AI-driven cash flow forecast for the organization,
+   * projecting liquidity, identifying potential surpluses or deficits, and providing
+   * recommendations for optimal treasury management.
    *
    * @example
    * ```ts
@@ -48,7 +31,8 @@ export class Treasury extends APIResource {
   }
 
   /**
-   * Get current liquidity positions
+   * Provides a real-time overview of the organization's liquidity across all
+   * accounts, currencies, and short-term investments.
    *
    * @example
    * ```ts
@@ -59,64 +43,44 @@ export class Treasury extends APIResource {
   getLiquidityPositions(options?: RequestOptions): APIPromise<TreasuryGetLiquidityPositionsResponse> {
     return this._client.get('/corporate/treasury/liquidity-positions', options);
   }
-
-  /**
-   * AI Liquidity Optimization Engine
-   *
-   * @example
-   * ```ts
-   * const response =
-   *   await client.corporate.treasury.manageLiquidity();
-   * ```
-   */
-  manageLiquidity(
-    body: TreasuryManageLiquidityParams | null | undefined = {},
-    options?: RequestOptions,
-  ): APIPromise<TreasuryManageLiquidityResponse> {
-    return this._client.post('/corporate/treasury/liquidity/optimize', { body, ...options });
-  }
 }
 
 export interface TreasuryForecastCashFlowResponse {
-  aiRecommendations?: Array<string>;
+  /**
+   * Forecast of cash inflows by source.
+   */
+  inflowForecast: unknown;
 
-  forecastId?: string;
-
-  projectedRunway?: number;
+  /**
+   * Forecast of cash outflows by category.
+   */
+  outflowForecast: unknown;
 }
 
 export interface TreasuryGetLiquidityPositionsResponse {
-  positions?: Array<unknown>;
+  /**
+   * AI's overall assessment of liquidity.
+   */
+  aiLiquidityAssessment: unknown;
 
-  total_liquidity?: number;
-}
-
-export interface TreasuryManageLiquidityResponse {
-  projectedYield?: number;
-
-  strategyId?: string;
-}
-
-export interface TreasuryBulkPayoutParams {
-  payouts: Array<TreasuryBulkPayoutParams.Payout>;
-}
-
-export namespace TreasuryBulkPayoutParams {
-  export interface Payout {
-    amount?: number;
-
-    recipient_id?: string;
-  }
+  /**
+   * Details on short-term investments contributing to liquidity.
+   */
+  shortTermInvestments: unknown;
 }
 
 export interface TreasuryForecastCashFlowParams {
-  horizonDays?: number;
-}
+  /**
+   * The number of days into the future for which to generate the cash flow forecast
+   * (e.g., 30, 90, 180).
+   */
+  forecastHorizonDays?: number;
 
-export interface TreasuryManageLiquidityParams {
-  sweepExcess?: boolean;
-
-  targetReserve?: number;
+  /**
+   * If true, the forecast will include best-case and worst-case scenario analysis
+   * alongside the most likely projection.
+   */
+  includeScenarioAnalysis?: boolean;
 }
 
 Treasury.Sweeping = Sweeping;
@@ -126,17 +90,10 @@ export declare namespace Treasury {
   export {
     type TreasuryForecastCashFlowResponse as TreasuryForecastCashFlowResponse,
     type TreasuryGetLiquidityPositionsResponse as TreasuryGetLiquidityPositionsResponse,
-    type TreasuryManageLiquidityResponse as TreasuryManageLiquidityResponse,
-    type TreasuryBulkPayoutParams as TreasuryBulkPayoutParams,
     type TreasuryForecastCashFlowParams as TreasuryForecastCashFlowParams,
-    type TreasuryManageLiquidityParams as TreasuryManageLiquidityParams,
   };
 
-  export {
-    Sweeping as Sweeping,
-    type SweepingConfigureParams as SweepingConfigureParams,
-    type SweepingExecuteParams as SweepingExecuteParams,
-  };
+  export { Sweeping as Sweeping };
 
-  export { Pooling as Pooling, type PoolingConfigureParams as PoolingConfigureParams };
+  export { Pooling as Pooling };
 }

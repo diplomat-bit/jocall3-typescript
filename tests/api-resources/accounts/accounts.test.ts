@@ -9,7 +9,7 @@ const client = new Jocall3({
 
 describe('resource accounts', () => {
   test('retrieve', async () => {
-    const responsePromise = client.accounts.retrieve('accountId');
+    const responsePromise = client.accounts.retrieve('acc_chase_checking_4567');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -37,8 +37,8 @@ describe('resource accounts', () => {
     ).rejects.toThrow(Jocall3.NotFoundError);
   });
 
-  test('close', async () => {
-    const responsePromise = client.accounts.close('accountId');
+  test('link', async () => {
+    const responsePromise = client.accounts.link({});
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -46,50 +46,5 @@ describe('resource accounts', () => {
     const dataAndResponse = await responsePromise.withResponse();
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  test('link: only required params', async () => {
-    const responsePromise = client.accounts.link({
-      institutionId: 'institutionId',
-      publicToken: 'publicToken',
-    });
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  test('link: required and optional params', async () => {
-    const response = await client.accounts.link({
-      institutionId: 'institutionId',
-      publicToken: 'publicToken',
-    });
-  });
-
-  test('open: only required params', async () => {
-    const responsePromise = client.accounts.open({
-      currency: 'USD',
-      initialDeposit: 0,
-      productType: 'quantum_checking',
-    });
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  test('open: required and optional params', async () => {
-    const response = await client.accounts.open({
-      currency: 'USD',
-      initialDeposit: 0,
-      productType: 'quantum_checking',
-      owners: ['string'],
-    });
   });
 });

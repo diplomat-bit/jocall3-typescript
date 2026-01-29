@@ -2,33 +2,34 @@
 
 import { APIResource } from '../../core/resource';
 import { APIPromise } from '../../core/api-promise';
-import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
 export class Offers extends APIResource {
   /**
-   * List AI-Targeted Loyalty Offers
+   * Redeems a personalized, exclusive offer from the Plato AI marketplace, often
+   * resulting in a discount, special rate, or credit to the user's account.
+   *
+   * @example
+   * ```ts
+   * const response = await client.marketplace.offers.redeem(
+   *   'offer_home_ins_promo_1',
+   * );
+   * ```
    */
-  list(options?: RequestOptions): APIPromise<OfferListResponse> {
-    return this._client.get('/marketplace/offers', options);
-  }
-
-  /**
-   * Redeem Marketplace Reward
-   */
-  redeem(offerID: string, options?: RequestOptions): APIPromise<void> {
-    return this._client.post(path`/marketplace/offers/${offerID}/redeem`, {
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
+  redeem(
+    offerID: string,
+    body?: OfferRedeemParams | null | undefined,
+    options?: RequestOptions,
+  ): APIPromise<unknown> {
+    return this._client.post(path`/marketplace/offers/${offerID}/redeem`, { body, ...options });
   }
 }
 
-export interface OfferListResponse {
-  data?: Array<unknown>;
-}
+export type OfferRedeemResponse = unknown;
+
+export interface OfferRedeemParams {}
 
 export declare namespace Offers {
-  export { type OfferListResponse as OfferListResponse };
+  export { type OfferRedeemResponse as OfferRedeemResponse, type OfferRedeemParams as OfferRedeemParams };
 }

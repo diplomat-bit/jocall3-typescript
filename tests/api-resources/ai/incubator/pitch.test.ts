@@ -9,7 +9,7 @@ const client = new Jocall3({
 
 describe('resource pitch', () => {
   test('retrieveDetails', async () => {
-    const responsePromise = client.ai.incubator.pitch.retrieveDetails('pitchId');
+    const responsePromise = client.ai.incubator.pitch.retrieveDetails('pitch_qw_synergychain-xyz');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -19,8 +19,8 @@ describe('resource pitch', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('submitFeedback: only required params', async () => {
-    const responsePromise = client.ai.incubator.pitch.submitFeedback('pitchId', { answers: [{}] });
+  test('submitFeedback', async () => {
+    const responsePromise = client.ai.incubator.pitch.submitFeedback('pitch_qw_synergychain-xyz');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -30,7 +30,14 @@ describe('resource pitch', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('submitFeedback: required and optional params', async () => {
-    const response = await client.ai.incubator.pitch.submitFeedback('pitchId', { answers: [{}] });
+  test('submitFeedback: request options and params are passed correctly', async () => {
+    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
+    await expect(
+      client.ai.incubator.pitch.submitFeedback(
+        'pitch_qw_synergychain-xyz',
+        {},
+        { path: '/_stainless_unknown_path' },
+      ),
+    ).rejects.toThrow(Jocall3.NotFoundError);
   });
 });

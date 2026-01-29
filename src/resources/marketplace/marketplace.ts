@@ -2,7 +2,7 @@
 
 import { APIResource } from '../../core/resource';
 import * as OffersAPI from './offers';
-import { OfferListResponse, Offers } from './offers';
+import { OfferRedeemParams, OfferRedeemResponse, Offers } from './offers';
 import { APIPromise } from '../../core/api-promise';
 import { RequestOptions } from '../../internal/request-options';
 
@@ -10,21 +10,64 @@ export class Marketplace extends APIResource {
   offers: OffersAPI.Offers = new OffersAPI.Offers(this._client);
 
   /**
-   * List Financial Products & Add-ons
+   * Retrieves a personalized, AI-curated list of products and services from the
+   * Plato AI marketplace, tailored to the user's financial profile, goals, and
+   * spending patterns. Includes options for filtering and advanced search.
+   *
+   * @example
+   * ```ts
+   * const response = await client.marketplace.listProducts();
+   * ```
    */
-  listProducts(options?: RequestOptions): APIPromise<MarketplaceListProductsResponse> {
-    return this._client.get('/marketplace/products', options);
+  listProducts(
+    query: MarketplaceListProductsParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<unknown> {
+    return this._client.get('/marketplace/products', { query, ...options });
   }
 }
 
-export interface MarketplaceListProductsResponse {
-  data?: Array<unknown>;
+export type MarketplaceListProductsResponse = unknown;
+
+export interface MarketplaceListProductsParams {
+  /**
+   * Filter by AI personalization level (e.g., low, medium, high). 'High' means
+   * highly relevant to user's specific needs.
+   */
+  aiPersonalizationLevel?: string;
+
+  /**
+   * Filter products by category (e.g., loans, insurance, credit_cards, investments).
+   */
+  category?: string;
+
+  /**
+   * Maximum number of items to return in a single page.
+   */
+  limit?: number;
+
+  /**
+   * Minimum user rating for products (0-5).
+   */
+  minRating?: number;
+
+  /**
+   * Number of items to skip before starting to collect the result set.
+   */
+  offset?: number;
 }
 
 Marketplace.Offers = Offers;
 
 export declare namespace Marketplace {
-  export { type MarketplaceListProductsResponse as MarketplaceListProductsResponse };
+  export {
+    type MarketplaceListProductsResponse as MarketplaceListProductsResponse,
+    type MarketplaceListProductsParams as MarketplaceListProductsParams,
+  };
 
-  export { Offers as Offers, type OfferListResponse as OfferListResponse };
+  export {
+    Offers as Offers,
+    type OfferRedeemResponse as OfferRedeemResponse,
+    type OfferRedeemParams as OfferRedeemParams,
+  };
 }

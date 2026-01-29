@@ -2,52 +2,43 @@
 
 import { APIResource } from '../../../../core/resource';
 import { APIPromise } from '../../../../core/api-promise';
-import { buildHeaders } from '../../../../internal/headers';
 import { RequestOptions } from '../../../../internal/request-options';
 import { path } from '../../../../internal/utils/path';
 
 export class Rules extends APIResource {
   /**
-   * Create Custom Fraud Rule
+   * Updates an existing custom AI-powered fraud detection rule, modifying its
+   * criteria, actions, or status.
    *
    * @example
    * ```ts
-   * await client.corporate.risk.fraud.rules.create({
-   *   logic: {},
-   *   name: 'name',
-   * });
-   * ```
-   */
-  create(body: RuleCreateParams, options?: RequestOptions): APIPromise<void> {
-    return this._client.post('/corporate/risk/fraud/rules', {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
-  }
-
-  /**
-   * Update a fraud rule
-   *
-   * @example
-   * ```ts
-   * await client.corporate.risk.fraud.rules.update('ruleId');
+   * const rule = await client.corporate.risk.fraud.rules.update(
+   *   'fraud_rule_high_value_inactive',
+   *   {
+   *     action: {
+   *       type: 'flag',
+   *       details: 'Flag for manual review only, do not block.',
+   *     },
+   *     criteria: {
+   *       transactionAmountMin: 7500,
+   *       accountInactivityDays: 60,
+   *     },
+   *   },
+   * );
    * ```
    */
   update(
     ruleID: string,
     body: RuleUpdateParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<void> {
-    return this._client.put(path`/corporate/risk/fraud/rules/${ruleID}`, {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
+  ): APIPromise<RuleUpdateResponse> {
+    return this._client.put(path`/corporate/risk/fraud/rules/${ruleID}`, { body, ...options });
   }
 
   /**
-   * List Active Fraud Rule Set
+   * Retrieves a list of AI-powered fraud detection rules currently active for the
+   * organization, including their parameters, thresholds, and associated actions
+   * (e.g., flag, block, alert).
    *
    * @example
    * ```ts
@@ -55,31 +46,54 @@ export class Rules extends APIResource {
    *   await client.corporate.risk.fraud.rules.list();
    * ```
    */
-  list(options?: RequestOptions): APIPromise<RuleListResponse> {
-    return this._client.get('/corporate/risk/fraud/rules', options);
+  list(query: RuleListParams | null | undefined = {}, options?: RequestOptions): APIPromise<unknown> {
+    return this._client.get('/corporate/risk/fraud/rules', { query, ...options });
   }
 }
 
-export interface RuleListResponse {
-  rules?: Array<unknown>;
+export interface RuleUpdateResponse {
+  /**
+   * Action to take when a fraud rule is triggered.
+   */
+  action: unknown;
+
+  /**
+   * Criteria that define when a fraud rule should trigger.
+   */
+  criteria: unknown;
 }
 
-export interface RuleCreateParams {
-  logic: unknown;
-
-  name: string;
-}
+export type RuleListResponse = unknown;
 
 export interface RuleUpdateParams {
-  action?: string;
+  /**
+   * Action to take when a fraud rule is triggered.
+   */
+  action?: unknown;
 
-  name?: string;
+  /**
+   * Criteria that define when a fraud rule should trigger.
+   */
+  criteria?: unknown;
+}
+
+export interface RuleListParams {
+  /**
+   * Maximum number of items to return in a single page.
+   */
+  limit?: number;
+
+  /**
+   * Number of items to skip before starting to collect the result set.
+   */
+  offset?: number;
 }
 
 export declare namespace Rules {
   export {
+    type RuleUpdateResponse as RuleUpdateResponse,
     type RuleListResponse as RuleListResponse,
-    type RuleCreateParams as RuleCreateParams,
     type RuleUpdateParams as RuleUpdateParams,
+    type RuleListParams as RuleListParams,
   };
 }

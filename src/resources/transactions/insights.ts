@@ -6,39 +6,22 @@ import { RequestOptions } from '../../internal/request-options';
 
 export class Insights extends APIResource {
   /**
-   * Get Cash Flow Prediction (Gemini Powered)
+   * Retrieves AI-generated insights into user spending trends over time, identifying
+   * patterns and anomalies.
+   *
+   * @example
+   * ```ts
+   * const response =
+   *   await client.transactions.insights.getTrends();
+   * ```
    */
-  getForecast(options?: RequestOptions): APIPromise<InsightGetForecastResponse> {
-    return this._client.get('/transactions/insights/future-flow', options);
-  }
-
-  /**
-   * Get AISpending Trend Analysis
-   */
-  getTrends(options?: RequestOptions): APIPromise<InsightGetTrendsResponse> {
+  getTrends(options?: RequestOptions): APIPromise<unknown> {
     return this._client.get('/transactions/insights/spending-trends', options);
   }
 }
 
-export interface InsightGetForecastResponse {
-  forecastDays?: number;
-
-  projectedLowPoint?: number;
-
-  recommendations?: Array<string>;
-}
-
-export interface InsightGetTrendsResponse {
-  aiNarrative?: string;
-
-  anomaliesDetected?: number;
-
-  overallTrend?: string;
-}
+export type InsightGetTrendsResponse = unknown;
 
 export declare namespace Insights {
-  export {
-    type InsightGetForecastResponse as InsightGetForecastResponse,
-    type InsightGetTrendsResponse as InsightGetTrendsResponse,
-  };
+  export { type InsightGetTrendsResponse as InsightGetTrendsResponse };
 }
