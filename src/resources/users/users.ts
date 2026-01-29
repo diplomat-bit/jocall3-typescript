@@ -1,12 +1,21 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../core/resource';
+import * as PasswordResetAPI from './password-reset';
+import {
+  PasswordReset,
+  PasswordResetConfirmParams,
+  PasswordResetConfirmResponse,
+  PasswordResetInitiateParams,
+  PasswordResetInitiateResponse,
+} from './password-reset';
 import * as MeAPI from './me/me';
 import { Me, MeRetrieveResponse, MeUpdateParams, MeUpdateResponse } from './me/me';
 import { APIPromise } from '../../core/api-promise';
 import { RequestOptions } from '../../internal/request-options';
 
 export class Users extends APIResource {
+  passwordReset: PasswordResetAPI.PasswordReset = new PasswordResetAPI.PasswordReset(this._client);
   me: MeAPI.Me = new MeAPI.Me(this._client);
 
   /**
@@ -15,10 +24,13 @@ export class Users extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.users.login();
+   * const response = await client.users.login({
+   *   email: 'quantum.visionary@demobank.com',
+   *   password: 'YourSecurePassword123',
+   * });
    * ```
    */
-  login(body: UserLoginParams, options?: RequestOptions): APIPromise<unknown> {
+  login(body: UserLoginParams, options?: RequestOptions): APIPromise<UserLoginResponse> {
     return this._client.post('/users/login', { body, ...options });
   }
 
@@ -28,7 +40,12 @@ export class Users extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.users.register();
+   * const response = await client.users.register({
+   *   email: 'alice.w@example.com',
+   *   name: 'Alice Wonderland',
+   *   password: 'SecureP@ssw0rd2024!',
+   *   phone: '+1-555-987-6543',
+   * });
    * ```
    */
   register(body: UserRegisterParams, options?: RequestOptions): APIPromise<UserRegisterResponse> {
@@ -36,10 +53,38 @@ export class Users extends APIResource {
   }
 }
 
-export type UserLoginResponse = unknown;
+export interface UserLoginResponse {
+  accessToken: string;
+
+  expiresIn: number;
+
+  refreshToken: string;
+
+  tokenType: string;
+}
 
 export interface UserRegisterResponse {
-  address?: unknown;
+  id: string;
+
+  email: string;
+
+  identityVerified: boolean;
+
+  name: string;
+
+  address?: UserRegisterResponse.Address;
+
+  aiPersona?: string;
+
+  dateOfBirth?: string;
+
+  gamificationLevel?: number;
+
+  loyaltyPoints?: number;
+
+  loyaltyTier?: string;
+
+  phone?: string;
 
   /**
    * User's personalized preferences for the platform.
@@ -49,27 +94,104 @@ export interface UserRegisterResponse {
   /**
    * Security-related status for the user account.
    */
-  securityStatus?: unknown;
+  securityStatus?: UserRegisterResponse.SecurityStatus;
 }
 
 export namespace UserRegisterResponse {
+  export interface Address {
+    city?: string;
+
+    country?: string;
+
+    state?: string;
+
+    street?: string;
+
+    zip?: string;
+  }
+
   /**
    * User's personalized preferences for the platform.
    */
   export interface Preferences {
+    aiInteractionMode?: string;
+
+    dataSharingConsent?: boolean;
+
     /**
      * Preferred channels for receiving notifications.
      */
-    notificationChannels?: unknown;
+    notificationChannels?: Preferences.NotificationChannels;
+
+    preferredLanguage?: string;
+
+    theme?: string;
+
+    transactionGrouping?: string;
+  }
+
+  export namespace Preferences {
+    /**
+     * Preferred channels for receiving notifications.
+     */
+    export interface NotificationChannels {
+      email?: boolean;
+
+      inApp?: boolean;
+
+      push?: boolean;
+
+      sms?: boolean;
+    }
+  }
+
+  /**
+   * Security-related status for the user account.
+   */
+  export interface SecurityStatus {
+    biometricsEnrolled?: boolean;
+
+    lastLogin?: string;
+
+    lastLoginIp?: string;
+
+    twoFactorEnabled?: boolean;
   }
 }
 
-export interface UserLoginParams {}
+export interface UserLoginParams {
+  email: string;
 
-export interface UserRegisterParams {
-  address?: unknown;
+  password: string;
 }
 
+export interface UserRegisterParams {
+  email: string;
+
+  name: string;
+
+  password: string;
+
+  address?: UserRegisterParams.Address;
+
+  phone?: string;
+}
+
+export namespace UserRegisterParams {
+  export interface Address {
+    city?: string;
+
+    country?: string;
+
+    state?: string;
+
+    street?: string;
+
+    zip?: string;
+  }
+}
+
+Users.PasswordReset = PasswordReset;
 Users.Me = Me;
 
 export declare namespace Users {
@@ -78,6 +200,14 @@ export declare namespace Users {
     type UserRegisterResponse as UserRegisterResponse,
     type UserLoginParams as UserLoginParams,
     type UserRegisterParams as UserRegisterParams,
+  };
+
+  export {
+    PasswordReset as PasswordReset,
+    type PasswordResetConfirmResponse as PasswordResetConfirmResponse,
+    type PasswordResetInitiateResponse as PasswordResetInitiateResponse,
+    type PasswordResetConfirmParams as PasswordResetConfirmParams,
+    type PasswordResetInitiateParams as PasswordResetInitiateParams,
   };
 
   export {

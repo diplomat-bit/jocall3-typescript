@@ -7,49 +7,85 @@ import { path } from '../../internal/utils/path';
 
 export class Overdraft extends APIResource {
   /**
+   * Retrieves the current overdraft protection settings for a specific account.
+   *
+   * @example
+   * ```ts
+   * const response =
+   *   await client.accounts.overdraft.retrieveSettings(
+   *     'acc_chase_checking_4567',
+   *   );
+   * ```
+   */
+  retrieveSettings(
+    accountID: string,
+    options?: RequestOptions,
+  ): APIPromise<OverdraftRetrieveSettingsResponse> {
+    return this._client.get(path`/accounts/${accountID}/overdraft-settings`, options);
+  }
+
+  /**
    * Updates the overdraft protection settings for a specific account, enabling or
    * disabling protection and configuring preferences.
    *
    * @example
    * ```ts
-   * const overdraft = await client.accounts.overdraft.update(
-   *   'acc_chase_checking_4567',
-   * );
+   * const response =
+   *   await client.accounts.overdraft.updateSettings(
+   *     'acc_chase_checking_4567',
+   *     { feePreference: 'decline_if_over_limit' },
+   *   );
    * ```
    */
-  update(
+  updateSettings(
     accountID: string,
-    body?: OverdraftUpdateParams | null | undefined,
+    body: OverdraftUpdateSettingsParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<unknown> {
+  ): APIPromise<OverdraftUpdateSettingsResponse> {
     return this._client.put(path`/accounts/${accountID}/overdraft-settings`, { body, ...options });
-  }
-
-  /**
-   * Retrieves the current overdraft protection settings for a specific account.
-   *
-   * @example
-   * ```ts
-   * const overdraft = await client.accounts.overdraft.get(
-   *   'acc_chase_checking_4567',
-   * );
-   * ```
-   */
-  get(accountID: string, options?: RequestOptions): APIPromise<unknown> {
-    return this._client.get(path`/accounts/${accountID}/overdraft-settings`, options);
   }
 }
 
-export type OverdraftUpdateResponse = unknown;
+export interface OverdraftRetrieveSettingsResponse {
+  accountId: string;
 
-export type OverdraftGetResponse = unknown;
+  enabled: boolean;
 
-export interface OverdraftUpdateParams {}
+  feePreference: string;
+
+  linkedSavingsAccountId?: string;
+
+  linkToSavings?: boolean;
+
+  protectionLimit?: number;
+}
+
+export interface OverdraftUpdateSettingsResponse {
+  accountId: string;
+
+  enabled: boolean;
+
+  feePreference: string;
+
+  linkedSavingsAccountId?: string;
+
+  linkToSavings?: boolean;
+
+  protectionLimit?: number;
+}
+
+export interface OverdraftUpdateSettingsParams {
+  enabled?: boolean;
+
+  feePreference?: string;
+
+  linkToSavings?: boolean;
+}
 
 export declare namespace Overdraft {
   export {
-    type OverdraftUpdateResponse as OverdraftUpdateResponse,
-    type OverdraftGetResponse as OverdraftGetResponse,
-    type OverdraftUpdateParams as OverdraftUpdateParams,
+    type OverdraftRetrieveSettingsResponse as OverdraftRetrieveSettingsResponse,
+    type OverdraftUpdateSettingsResponse as OverdraftUpdateSettingsResponse,
+    type OverdraftUpdateSettingsParams as OverdraftUpdateSettingsParams,
   };
 }

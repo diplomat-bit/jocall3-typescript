@@ -2,4 +2,4 @@
 
 import { APIResource } from '../../core/resource';
 
-export class SmartContracts extends APIResource {}
+export class AuditLogs extends APIResource {}

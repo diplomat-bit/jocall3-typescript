@@ -17,18 +17,18 @@ export class Sustainability extends APIResource {
    * transaction data, lifestyle choices, and AI-driven impact assessments, offering
    * insights and reduction strategies.
    */
-  getFootprint(options?: RequestOptions): APIPromise<unknown> {
+  retrieveCarbonFootprint(options?: RequestOptions): APIPromise<unknown> {
     return this._client.get('/sustainability/carbon-footprint', options);
   }
 }
 
-export type SustainabilityGetFootprintResponse = unknown;
+export type SustainabilityRetrieveCarbonFootprintResponse = unknown;
 
 Sustainability.Offsets = Offsets;
 Sustainability.Impact = Impact;
 
 export declare namespace Sustainability {
-  export { type SustainabilityGetFootprintResponse as SustainabilityGetFootprintResponse };
+  export { type SustainabilityRetrieveCarbonFootprintResponse as SustainabilityRetrieveCarbonFootprintResponse };
 
   export { Offsets as Offsets };
 

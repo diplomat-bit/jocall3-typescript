@@ -4,14 +4,12 @@ import Jocall3 from 'jocall3-node';
 
 const client = new Jocall3({
   apiKey: 'My API Key',
-  geminiAPIKey: 'My Gemini API Key',
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
 describe('resource fx', () => {
-  // Prism tests are disabled
-  test.skip('convert', async () => {
-    const responsePromise = client.payments.fx.convert({});
+  test('convertCurrency', async () => {
+    const responsePromise = client.payments.fx.convertCurrency({});
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -21,9 +19,8 @@ describe('resource fx', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
-  test.skip('getRates', async () => {
-    const responsePromise = client.payments.fx.getRates();
+  test('retrieveRates', async () => {
+    const responsePromise = client.payments.fx.retrieveRates();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -33,11 +30,10 @@ describe('resource fx', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
-  test.skip('getRates: request options and params are passed correctly', async () => {
+  test('retrieveRates: request options and params are passed correctly', async () => {
     // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
     await expect(
-      client.payments.fx.getRates(
+      client.payments.fx.retrieveRates(
         {
           baseCurrency: 'baseCurrency',
           forecastDays: 0,

@@ -43,7 +43,12 @@ const client = new Jocall3({
   environment: 'sandbox', // or 'production' | 'gemini_direct'; defaults to 'production'
 });
 
-const response: Jocall3.UserRegisterResponse = await client.users.register();
+const params: Jocall3.UserRegisterParams = {
+  email: 'user@quantum-ledger.com',
+  name: 'Standard User',
+  password: 'DefaultPassword123!',
+};
+const response: Jocall3.UserRegisterResponse = await client.users.register(params);
 ```
 
 Documentation for each method, request param, and response field are available in docstrings and will appear on hover in most modern editors.
@@ -56,15 +61,21 @@ a subclass of `APIError` will be thrown:
 
 <!-- prettier-ignore -->
 ```ts
-const response = await client.users.register().catch(async (err) => {
-  if (err instanceof Jocall3.APIError) {
-    console.log(err.status); // 400
-    console.log(err.name); // BadRequestError
-    console.log(err.headers); // {server: 'nginx', ...}
-  } else {
-    throw err;
-  }
-});
+const response = await client.users
+  .register({
+    email: 'user@quantum-ledger.com',
+    name: 'Standard User',
+    password: 'DefaultPassword123!',
+  })
+  .catch(async (err) => {
+    if (err instanceof Jocall3.APIError) {
+      console.log(err.status); // 400
+      console.log(err.name); // BadRequestError
+      console.log(err.headers); // {server: 'nginx', ...}
+    } else {
+      throw err;
+    }
+  });
 ```
 
 Error codes are as follows:
@@ -97,6 +108,10 @@ const client = new Jocall3({
 
 // Or, configure per-request:
 await client.users.register({
+  email: 'user@quantum-ledger.com',
+  name: 'Standard User',
+  password: 'DefaultPassword123!',
+}, {
   maxRetries: 5,
 });
 ```
@@ -114,6 +129,10 @@ const client = new Jocall3({
 
 // Override per-request:
 await client.users.register({
+  email: 'user@quantum-ledger.com',
+  name: 'Standard User',
+  password: 'DefaultPassword123!',
+}, {
   timeout: 5 * 1000,
 });
 ```
@@ -136,13 +155,25 @@ Unlike `.asResponse()` this method consumes the body, returning once it is parse
 ```ts
 const client = new Jocall3();
 
-const response = await client.users.register().asResponse();
+const response = await client.users
+  .register({
+    email: 'user@quantum-ledger.com',
+    name: 'Standard User',
+    password: 'DefaultPassword123!',
+  })
+  .asResponse();
 console.log(response.headers.get('X-My-Header'));
 console.log(response.statusText); // access the underlying Response object
 
-const { data: response, response: raw } = await client.users.register().withResponse();
+const { data: response, response: raw } = await client.users
+  .register({
+    email: 'user@quantum-ledger.com',
+    name: 'Standard User',
+    password: 'DefaultPassword123!',
+  })
+  .withResponse();
 console.log(raw.headers.get('X-My-Header'));
-console.log(response.address);
+console.log(response.id);
 ```
 
 ### Logging

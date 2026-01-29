@@ -4,14 +4,12 @@ import Jocall3 from 'jocall3-node';
 
 const client = new Jocall3({
   apiKey: 'My API Key',
-  geminiAPIKey: 'My Gemini API Key',
   baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
 });
 
 describe('resource sustainability', () => {
-  // Prism tests are disabled
-  test.skip('getFootprint', async () => {
-    const responsePromise = client.sustainability.getFootprint();
+  test('retrieveCarbonFootprint', async () => {
+    const responsePromise = client.sustainability.retrieveCarbonFootprint();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;

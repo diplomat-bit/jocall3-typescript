@@ -40,14 +40,14 @@ export class Wallets extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.web3.wallets.getBalance(
+   * const response = await client.web3.wallets.retrieveBalances(
    *   'wallet_conn_eth_0xabc123',
    * );
    * ```
    */
-  getBalance(
+  retrieveBalances(
     walletID: string,
-    query: WalletGetBalanceParams | null | undefined = {},
+    query: WalletRetrieveBalancesParams | null | undefined = {},
     options?: RequestOptions,
   ): APIPromise<unknown> {
     return this._client.get(path`/web3/wallets/${walletID}/balances`, { query, ...options });
@@ -58,7 +58,7 @@ export type WalletCreateResponse = unknown;
 
 export type WalletListResponse = unknown;
 
-export type WalletGetBalanceResponse = unknown;
+export type WalletRetrieveBalancesResponse = unknown;
 
 export interface WalletCreateParams {}
 
@@ -74,7 +74,7 @@ export interface WalletListParams {
   offset?: number;
 }
 
-export interface WalletGetBalanceParams {
+export interface WalletRetrieveBalancesParams {
   /**
    * Maximum number of items to return in a single page.
    */
@@ -90,9 +90,9 @@ export declare namespace Wallets {
   export {
     type WalletCreateResponse as WalletCreateResponse,
     type WalletListResponse as WalletListResponse,
-    type WalletGetBalanceResponse as WalletGetBalanceResponse,
+    type WalletRetrieveBalancesResponse as WalletRetrieveBalancesResponse,
     type WalletCreateParams as WalletCreateParams,
     type WalletListParams as WalletListParams,
-    type WalletGetBalanceParams as WalletGetBalanceParams,
+    type WalletRetrieveBalancesParams as WalletRetrieveBalancesParams,
   };
 }

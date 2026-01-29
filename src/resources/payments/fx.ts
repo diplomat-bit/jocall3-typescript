@@ -11,10 +11,10 @@ export class Fx extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.payments.fx.convert();
+   * const response = await client.payments.fx.convertCurrency();
    * ```
    */
-  convert(body: FxConvertParams, options?: RequestOptions): APIPromise<unknown> {
+  convertCurrency(body: FxConvertCurrencyParams, options?: RequestOptions): APIPromise<unknown> {
     return this._client.post('/payments/fx/convert', { body, ...options });
   }
 
@@ -25,20 +25,20 @@ export class Fx extends APIResource {
    *
    * @example
    * ```ts
-   * const response = await client.payments.fx.getRates();
+   * const response = await client.payments.fx.retrieveRates();
    * ```
    */
-  getRates(
-    query: FxGetRatesParams | null | undefined = {},
+  retrieveRates(
+    query: FxRetrieveRatesParams | null | undefined = {},
     options?: RequestOptions,
-  ): APIPromise<FxGetRatesResponse> {
+  ): APIPromise<FxRetrieveRatesResponse> {
     return this._client.get('/payments/fx/rates', { query, ...options });
   }
 }
 
-export type FxConvertResponse = unknown;
+export type FxConvertCurrencyResponse = unknown;
 
-export interface FxGetRatesResponse {
+export interface FxRetrieveRatesResponse {
   /**
    * Real-time foreign exchange rates.
    */
@@ -47,9 +47,9 @@ export interface FxGetRatesResponse {
   historicalVolatility?: unknown;
 }
 
-export interface FxConvertParams {}
+export interface FxConvertCurrencyParams {}
 
-export interface FxGetRatesParams {
+export interface FxRetrieveRatesParams {
   /**
    * The base currency code (e.g., USD).
    */
@@ -68,9 +68,9 @@ export interface FxGetRatesParams {
 
 export declare namespace Fx {
   export {
-    type FxConvertResponse as FxConvertResponse,
-    type FxGetRatesResponse as FxGetRatesResponse,
-    type FxConvertParams as FxConvertParams,
-    type FxGetRatesParams as FxGetRatesParams,
+    type FxConvertCurrencyResponse as FxConvertCurrencyResponse,
+    type FxRetrieveRatesResponse as FxRetrieveRatesResponse,
+    type FxConvertCurrencyParams as FxConvertCurrencyParams,
+    type FxRetrieveRatesParams as FxRetrieveRatesParams,
   };
 }
