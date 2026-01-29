@@ -8,12 +8,8 @@ const client = new Jocall3({
 });
 
 describe('resource audits', () => {
-  test('request: only required params', async () => {
-    const responsePromise = client.corporate.compliance.audits.request({
-      auditScope: 'auditScope',
-      endDate: '2019-12-27',
-      startDate: '2019-12-27',
-    });
+  test('request', async () => {
+    const responsePromise = client.corporate.compliance.audits.request({});
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -23,16 +19,8 @@ describe('resource audits', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('request: required and optional params', async () => {
-    const response = await client.corporate.compliance.audits.request({
-      auditScope: 'auditScope',
-      endDate: '2019-12-27',
-      startDate: '2019-12-27',
-    });
-  });
-
   test('retrieveReport', async () => {
-    const responsePromise = client.corporate.compliance.audits.retrieveReport('auditId');
+    const responsePromise = client.corporate.compliance.audits.retrieveReport('audit_corp_xyz789');
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;

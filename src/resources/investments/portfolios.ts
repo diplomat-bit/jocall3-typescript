@@ -2,118 +2,110 @@
 
 import { APIResource } from '../../core/resource';
 import { APIPromise } from '../../core/api-promise';
-import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
 export class Portfolios extends APIResource {
   /**
-   * Create Strategic Portfolio
+   * Retrieves detailed information for a specific investment portfolio, including
+   * holdings, performance, and AI insights.
+   *
+   * @example
+   * ```ts
+   * const portfolio =
+   *   await client.investments.portfolios.retrieve(
+   *     'portfolio_equity_growth',
+   *   );
+   * ```
    */
-  create(body: PortfolioCreateParams, options?: RequestOptions): APIPromise<void> {
-    return this._client.post('/investments/portfolios', {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
+  retrieve(portfolioID: string, options?: RequestOptions): APIPromise<unknown> {
+    return this._client.get(path`/investments/portfolios/${portfolioID}`, options);
   }
 
   /**
-   * Get Full Portfolio Performance
-   */
-  retrieve(portfolioID: string, options?: RequestOptions): APIPromise<void> {
-    return this._client.get(path`/investments/portfolios/${portfolioID}`, {
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
-  }
-
-  /**
-   * Update Portfolio Strategy
+   * Updates high-level details of an investment portfolio, such as name or risk
+   * tolerance.
+   *
+   * @example
+   * ```ts
+   * const portfolio =
+   *   await client.investments.portfolios.update(
+   *     'portfolio_equity_growth',
+   *   );
+   * ```
    */
   update(
     portfolioID: string,
-    body: PortfolioUpdateParams | null | undefined = {},
+    body?: PortfolioUpdateParams | null | undefined,
     options?: RequestOptions,
-  ): APIPromise<void> {
-    return this._client.put(path`/investments/portfolios/${portfolioID}`, {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
+  ): APIPromise<unknown> {
+    return this._client.put(path`/investments/portfolios/${portfolioID}`, { body, ...options });
   }
 
   /**
-   * List All Investment Portfolios
+   * Retrieves a summary of all investment portfolios linked to the user's account.
+   *
+   * @example
+   * ```ts
+   * const portfolios =
+   *   await client.investments.portfolios.list();
+   * ```
    */
-  list(
-    query: PortfolioListParams | null | undefined = {},
-    options?: RequestOptions,
-  ): APIPromise<PortfolioListResponse> {
+  list(query: PortfolioListParams | null | undefined = {}, options?: RequestOptions): APIPromise<unknown> {
     return this._client.get('/investments/portfolios', { query, ...options });
   }
 
   /**
-   * Trigger Gemini AI Rebalancing
+   * Triggers an AI-driven rebalancing process for a specific investment portfolio
+   * based on a target risk tolerance or strategy.
+   *
+   * @example
+   * ```ts
+   * const response =
+   *   await client.investments.portfolios.rebalance(
+   *     'portfolio_equity_growth',
+   *   );
+   * ```
    */
   rebalance(
     portfolioID: string,
-    body: PortfolioRebalanceParams | null | undefined = {},
+    body: PortfolioRebalanceParams,
     options?: RequestOptions,
-  ): APIPromise<PortfolioRebalanceResponse> {
+  ): APIPromise<unknown> {
     return this._client.post(path`/investments/portfolios/${portfolioID}/rebalance`, { body, ...options });
   }
 }
 
-export interface PortfolioListResponse {
-  data?: Array<PortfolioListResponse.Data>;
-}
+export type PortfolioRetrieveResponse = unknown;
 
-export namespace PortfolioListResponse {
-  export interface Data {
-    id?: string;
+export type PortfolioUpdateResponse = unknown;
 
-    name?: string;
+export type PortfolioListResponse = unknown;
 
-    totalValue?: number;
-  }
-}
+export type PortfolioRebalanceResponse = unknown;
 
-export interface PortfolioRebalanceResponse {
-  impactSummary?: string;
-
-  rebalanceId?: string;
-}
-
-export interface PortfolioCreateParams {
-  name: string;
-
-  strategy: 'GROWTH' | 'BALANCED' | 'INCOME' | 'ESG_FOCUSED';
-
-  initialAllocation?: unknown;
-}
-
-export interface PortfolioUpdateParams {
-  riskTolerance?: number;
-
-  strategy?: string;
-}
+export interface PortfolioUpdateParams {}
 
 export interface PortfolioListParams {
+  /**
+   * Maximum number of items to return in a single page.
+   */
   limit?: number;
 
+  /**
+   * Number of items to skip before starting to collect the result set.
+   */
   offset?: number;
 }
 
-export interface PortfolioRebalanceParams {
-  executionMode?: 'AUTO' | 'CONFIRM_ONLY';
-}
+export interface PortfolioRebalanceParams {}
 
 export declare namespace Portfolios {
   export {
+    type PortfolioRetrieveResponse as PortfolioRetrieveResponse,
+    type PortfolioUpdateResponse as PortfolioUpdateResponse,
     type PortfolioListResponse as PortfolioListResponse,
     type PortfolioRebalanceResponse as PortfolioRebalanceResponse,
-    type PortfolioCreateParams as PortfolioCreateParams,
     type PortfolioUpdateParams as PortfolioUpdateParams,
     type PortfolioListParams as PortfolioListParams,
     type PortfolioRebalanceParams as PortfolioRebalanceParams,

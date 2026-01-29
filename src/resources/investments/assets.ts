@@ -6,21 +6,41 @@ import { RequestOptions } from '../../internal/request-options';
 
 export class Assets extends APIResource {
   /**
-   * Global Multi-Asset Search (Equities, Crypto, ESG)
+   * Searches for available investment assets (stocks, ETFs, mutual funds) and
+   * returns their ESG impact scores.
+   *
+   * @example
+   * ```ts
+   * const response = await client.investments.assets.search();
+   * ```
    */
-  search(query: AssetSearchParams, options?: RequestOptions): APIPromise<AssetSearchResponse> {
+  search(query: AssetSearchParams | null | undefined = {}, options?: RequestOptions): APIPromise<unknown> {
     return this._client.get('/investments/assets/search', { query, ...options });
   }
 }
 
-export interface AssetSearchResponse {
-  hits?: Array<unknown>;
-}
+export type AssetSearchResponse = unknown;
 
 export interface AssetSearchParams {
-  query: string;
+  /**
+   * Maximum number of items to return in a single page.
+   */
+  limit?: number;
 
-  assetType?: 'EQUITY' | 'CRYPTO' | 'ETF' | 'BOND';
+  /**
+   * Minimum desired ESG score (0-10).
+   */
+  minESGScore?: number;
+
+  /**
+   * Number of items to skip before starting to collect the result set.
+   */
+  offset?: number;
+
+  /**
+   * Search query for asset name or symbol.
+   */
+  query?: string;
 }
 
 export declare namespace Assets {
