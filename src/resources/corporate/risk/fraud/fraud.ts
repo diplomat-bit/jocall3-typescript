@@ -2,7 +2,7 @@
 
 import { APIResource } from '../../../../core/resource';
 import * as RulesAPI from './rules';
-import { RuleCreateParams, RuleListResponse, Rules } from './rules';
+import { RuleCreateParams, RuleListResponse, RuleUpdateParams, Rules } from './rules';
 import { APIPromise } from '../../../../core/api-promise';
 import { RequestOptions } from '../../../../internal/request-options';
 
@@ -50,5 +50,6 @@ export declare namespace Fraud {
     Rules as Rules,
     type RuleListResponse as RuleListResponse,
     type RuleCreateParams as RuleCreateParams,
+    type RuleUpdateParams as RuleUpdateParams,
   };
 }

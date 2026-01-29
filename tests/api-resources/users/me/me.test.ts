@@ -38,8 +38,8 @@ describe('resource me', () => {
           address: {
             city: 'city',
             country: 'country',
-            state: 'state',
             street: 'street',
+            state: 'state',
             zip: 'zip',
           },
           name: 'name',

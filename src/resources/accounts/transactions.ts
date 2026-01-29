@@ -42,11 +42,11 @@ export class Transactions extends APIResource {
 }
 
 export interface TransactionListArchivedResponse {
-  data?: Array<TransactionListArchivedResponse.Data>;
+  data: Array<TransactionListArchivedResponse.Data>;
+
+  total: number;
 
   nextOffset?: number;
-
-  total?: number;
 }
 
 export namespace TransactionListArchivedResponse {
@@ -61,30 +61,18 @@ export namespace TransactionListArchivedResponse {
 
     description: string;
 
-    accountId?: string;
-
-    carbonFootprint?: number;
-
     category?: string;
 
-    merchantDetails?: Data.MerchantDetails;
-  }
-
-  export namespace Data {
-    export interface MerchantDetails {
-      logoUrl?: string;
-
-      name?: string;
-    }
+    notes?: string;
   }
 }
 
 export interface TransactionListPendingResponse {
-  data?: Array<TransactionListPendingResponse.Data>;
+  data: Array<TransactionListPendingResponse.Data>;
+
+  total: number;
 
   nextOffset?: number;
-
-  total?: number;
 }
 
 export namespace TransactionListPendingResponse {
@@ -99,21 +87,9 @@ export namespace TransactionListPendingResponse {
 
     description: string;
 
-    accountId?: string;
-
-    carbonFootprint?: number;
-
     category?: string;
 
-    merchantDetails?: Data.MerchantDetails;
-  }
-
-  export namespace Data {
-    export interface MerchantDetails {
-      logoUrl?: string;
-
-      name?: string;
-    }
+    notes?: string;
   }
 }
 

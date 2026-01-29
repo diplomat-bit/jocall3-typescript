@@ -8,6 +8,23 @@ const client = new Jocall3({
 });
 
 describe('resource treasury', () => {
+  test('bulkPayout: only required params', async () => {
+    const responsePromise = client.corporate.treasury.bulkPayout({ payouts: [{}] });
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  test('bulkPayout: required and optional params', async () => {
+    const response = await client.corporate.treasury.bulkPayout({
+      payouts: [{ amount: 0, recipient_id: 'recipient_id' }],
+    });
+  });
+
   test('forecastCashFlow', async () => {
     const responsePromise = client.corporate.treasury.forecastCashFlow();
     const rawResponse = await responsePromise.asResponse();
@@ -24,6 +41,17 @@ describe('resource treasury', () => {
     await expect(
       client.corporate.treasury.forecastCashFlow({ horizonDays: 0 }, { path: '/_stainless_unknown_path' }),
     ).rejects.toThrow(Jocall3.NotFoundError);
+  });
+
+  test('getLiquidityPositions', async () => {
+    const responsePromise = client.corporate.treasury.getLiquidityPositions();
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
   });
 
   test('manageLiquidity', async () => {
