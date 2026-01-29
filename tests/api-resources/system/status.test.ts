@@ -2,12 +2,14 @@
 
 import Jocall3 from 'jocall3-node';
 
-const client = new Jocall3({ baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010' });
+const client = new Jocall3({
+  apiKey: 'My API Key',
+  baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
+});
 
-describe('resource investments', () => {
-  // Prism tests are disabled
-  test.skip('analyzeImpact', async () => {
-    const responsePromise = client.sustainability.investments.analyzeImpact();
+describe('resource status', () => {
+  test('retrieve', async () => {
+    const responsePromise = client.system.status.retrieve();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;

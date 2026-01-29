@@ -1,75 +1,154 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 import { APIResource } from '../../core/resource';
+import * as PasswordResetAPI from './password-reset';
+import {
+  PasswordReset,
+  PasswordResetConfirmParams,
+  PasswordResetConfirmResponse,
+  PasswordResetInitiateParams,
+  PasswordResetInitiateResponse,
+} from './password-reset';
 import * as MeAPI from './me/me';
 import { Me, MeRetrieveResponse, MeUpdateParams, MeUpdateResponse } from './me/me';
 import { APIPromise } from '../../core/api-promise';
+import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 
 export class Users extends APIResource {
+  passwordReset: PasswordResetAPI.PasswordReset = new PasswordResetAPI.PasswordReset(this._client);
   me: MeAPI.Me = new MeAPI.Me(this._client);
 
   /**
-   * Authenticates a user and creates a secure session, returning access tokens. May
-   * require MFA depending on user settings.
-   *
-   * @example
-   * ```ts
-   * const response = await client.users.login();
-   * ```
+   * User Login and Session Creation
    */
-  login(body: UserLoginParams, options?: RequestOptions): APIPromise<unknown> {
+  login(body: UserLoginParams, options?: RequestOptions): APIPromise<UserLoginResponse> {
     return this._client.post('/users/login', { body, ...options });
   }
 
   /**
-   * Registers a new user account with , initiating the onboarding process. Requires
-   * basic user details.
-   *
-   * @example
-   * ```ts
-   * const response = await client.users.register();
-   * ```
+   * Terminate User Session
+   */
+  logout(options?: RequestOptions): APIPromise<void> {
+    return this._client.post('/users/logout', {
+      ...options,
+      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+    });
+  }
+
+  /**
+   * Initiates the onboarding process. Requires unique email and name.
    */
   register(body: UserRegisterParams, options?: RequestOptions): APIPromise<UserRegisterResponse> {
     return this._client.post('/users/register', { body, ...options });
   }
 }
 
-export type UserLoginResponse = unknown;
+export interface UserLoginResponse {
+  /**
+   * JWT for bearerAuth
+   */
+  accessToken: string;
+
+  /**
+   * Seconds until expiry
+   */
+  expiresIn: number;
+
+  refreshToken: string;
+
+  tokenType: string;
+}
 
 export interface UserRegisterResponse {
-  address?: unknown;
+  id: string;
 
-  /**
-   * User's personalized preferences for the platform.
-   */
+  email: string;
+
+  identityVerified: boolean;
+
+  name: string;
+
+  address?: UserRegisterResponse.Address;
+
+  phone?: string;
+
   preferences?: UserRegisterResponse.Preferences;
 
-  /**
-   * Security-related status for the user account.
-   */
-  securityStatus?: unknown;
+  securityStatus?: UserRegisterResponse.SecurityStatus;
 }
 
 export namespace UserRegisterResponse {
-  /**
-   * User's personalized preferences for the platform.
-   */
+  export interface Address {
+    city?: string;
+
+    country?: string;
+
+    state?: string;
+
+    street?: string;
+
+    zip?: string;
+  }
+
   export interface Preferences {
-    /**
-     * Preferred channels for receiving notifications.
-     */
     notificationChannels?: unknown;
+
+    theme?: string;
+  }
+
+  export interface SecurityStatus {
+    lastLogin?: string;
+
+    twoFactorEnabled?: boolean;
   }
 }
 
-export interface UserLoginParams {}
+export interface UserLoginParams {
+  email: string;
 
-export interface UserRegisterParams {
-  address?: unknown;
+  password: string;
 }
 
+export interface UserRegisterParams {
+  /**
+   * Primary login email
+   */
+  email: string;
+
+  /**
+   * Full legal name
+   */
+  name: string;
+
+  /**
+   * Secure hashable string
+   */
+  password: string;
+
+  address?: UserRegisterParams.Address;
+
+  /**
+   * International format phone number
+   */
+  phone?: string;
+}
+
+export namespace UserRegisterParams {
+  export interface Address {
+    city?: string;
+
+    country?: string;
+
+    state?: string;
+
+    street?: string;
+
+    zip?: string;
+  }
+}
+
+Users.PasswordReset = PasswordReset;
 Users.Me = Me;
 
 export declare namespace Users {
@@ -78,6 +157,14 @@ export declare namespace Users {
     type UserRegisterResponse as UserRegisterResponse,
     type UserLoginParams as UserLoginParams,
     type UserRegisterParams as UserRegisterParams,
+  };
+
+  export {
+    PasswordReset as PasswordReset,
+    type PasswordResetConfirmResponse as PasswordResetConfirmResponse,
+    type PasswordResetInitiateResponse as PasswordResetInitiateResponse,
+    type PasswordResetConfirmParams as PasswordResetConfirmParams,
+    type PasswordResetInitiateParams as PasswordResetInitiateParams,
   };
 
   export {

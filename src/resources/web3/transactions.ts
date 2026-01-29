@@ -2,31 +2,106 @@
 
 import { APIResource } from '../../core/resource';
 import { APIPromise } from '../../core/api-promise';
+import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 
 export class Transactions extends APIResource {
   /**
-   * Prepares and initiates a cryptocurrency transfer from a connected wallet to a
-   * specified recipient address. Requires user confirmation (e.g., via wallet
-   * signature).
+   * Cross-chain Asset Bridge
    *
    * @example
    * ```ts
-   * const response = await client.web3.transactions.initiate();
+   * await client.web3.transactions.bridgeChain({
+   *   token: 'token',
+   *   amount: 'amount',
+   *   destChain: 'destChain',
+   *   sourceChain: 'sourceChain',
+   * });
    * ```
    */
-  initiate(body: TransactionInitiateParams, options?: RequestOptions): APIPromise<unknown> {
-    return this._client.post('/web3/transactions/initiate', { body, ...options });
+  bridgeChain(body: TransactionBridgeChainParams, options?: RequestOptions): APIPromise<void> {
+    return this._client.post('/web3/transactions/bridge', {
+      body,
+      ...options,
+      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+    });
+  }
+
+  /**
+   * Initiate On-chain Transfer
+   *
+   * @example
+   * ```ts
+   * const response = await client.web3.transactions.sendCrypto({
+   *   token: 'token',
+   *   amount: 'amount',
+   *   to: 'to',
+   * });
+   * ```
+   */
+  sendCrypto(
+    body: TransactionSendCryptoParams,
+    options?: RequestOptions,
+  ): APIPromise<TransactionSendCryptoResponse> {
+    return this._client.post('/web3/transactions/send', { body, ...options });
+  }
+
+  /**
+   * Execute Multi-chain Token Swap
+   *
+   * @example
+   * ```ts
+   * await client.web3.transactions.swapTokens({
+   *   amount: 'amount',
+   *   fromToken: 'fromToken',
+   *   toToken: 'toToken',
+   * });
+   * ```
+   */
+  swapTokens(body: TransactionSwapTokensParams, options?: RequestOptions): APIPromise<void> {
+    return this._client.post('/web3/transactions/swap', {
+      body,
+      ...options,
+      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+    });
   }
 }
 
-export type TransactionInitiateResponse = unknown;
+export interface TransactionSendCryptoResponse {
+  txHash?: string;
+}
 
-export interface TransactionInitiateParams {}
+export interface TransactionBridgeChainParams {
+  token: string;
+
+  amount: string;
+
+  destChain: string;
+
+  sourceChain: string;
+}
+
+export interface TransactionSendCryptoParams {
+  token: string;
+
+  amount: string;
+
+  to: string;
+}
+
+export interface TransactionSwapTokensParams {
+  amount: string;
+
+  fromToken: string;
+
+  toToken: string;
+}
 
 export declare namespace Transactions {
   export {
-    type TransactionInitiateResponse as TransactionInitiateResponse,
-    type TransactionInitiateParams as TransactionInitiateParams,
+    type TransactionSendCryptoResponse as TransactionSendCryptoResponse,
+    type TransactionBridgeChainParams as TransactionBridgeChainParams,
+    type TransactionSendCryptoParams as TransactionSendCryptoParams,
+    type TransactionSwapTokensParams as TransactionSwapTokensParams,
   };
 }

@@ -2,97 +2,136 @@
 
 import { APIResource } from '../../core/resource';
 import { APIPromise } from '../../core/api-promise';
+import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
 export class Wallets extends APIResource {
   /**
-   * Retrieves a list of all securely linked cryptocurrency wallets (e.g., MetaMask,
-   * Ledger integration), showing their addresses, associated networks, and
-   * verification status.
+   * Create Non-Custodial Wallet
+   *
+   * @example
+   * ```ts
+   * const wallet = await client.web3.wallets.create({
+   *   network: 'ETH',
+   * });
+   * ```
+   */
+  create(body: WalletCreateParams, options?: RequestOptions): APIPromise<WalletCreateResponse> {
+    return this._client.post('/web3/wallets', { body, ...options });
+  }
+
+  /**
+   * List Connected Wallets
    *
    * @example
    * ```ts
    * const wallets = await client.web3.wallets.list();
    * ```
    */
-  list(query: WalletListParams | null | undefined = {}, options?: RequestOptions): APIPromise<unknown> {
-    return this._client.get('/web3/wallets', { query, ...options });
+  list(options?: RequestOptions): APIPromise<WalletListResponse> {
+    return this._client.get('/web3/wallets', options);
   }
 
   /**
-   * Initiates the process to securely connect a new cryptocurrency wallet to the
-   * user's profile, typically involving a signed message or OAuth flow from the
-   * wallet provider.
+   * Link External Web3 Wallet (MetaMask/Phantom)
    *
    * @example
    * ```ts
-   * const response = await client.web3.wallets.connect();
+   * await client.web3.wallets.connect({
+   *   address: 'address',
+   *   provider: 'provider',
+   *   signature: 'signature',
+   * });
    * ```
    */
-  connect(body: WalletConnectParams, options?: RequestOptions): APIPromise<unknown> {
-    return this._client.post('/web3/wallets', { body, ...options });
+  connect(body: WalletConnectParams, options?: RequestOptions): APIPromise<void> {
+    return this._client.post('/web3/wallets/connect', {
+      body,
+      ...options,
+      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
+    });
   }
 
   /**
-   * Retrieves the current balances of all recognized crypto assets within a specific
-   * connected wallet.
+   * Get Multi-chain Token Balances
    *
    * @example
    * ```ts
    * const response = await client.web3.wallets.getBalance(
-   *   'wallet_conn_eth_0xabc123',
+   *   'walletId',
    * );
    * ```
    */
-  getBalance(
-    walletID: string,
-    query: WalletGetBalanceParams | null | undefined = {},
-    options?: RequestOptions,
-  ): APIPromise<unknown> {
-    return this._client.get(path`/web3/wallets/${walletID}/balances`, { query, ...options });
+  getBalance(walletID: string, options?: RequestOptions): APIPromise<WalletGetBalanceResponse> {
+    return this._client.get(path`/web3/wallets/${walletID}/balances`, options);
   }
 }
 
-export type WalletListResponse = unknown;
+export interface WalletCreateResponse {
+  id: string;
 
-export type WalletConnectResponse = unknown;
+  blockchainNetwork: string;
 
-export type WalletGetBalanceResponse = unknown;
+  status: string;
 
-export interface WalletListParams {
-  /**
-   * Maximum number of items to return in a single page.
-   */
-  limit?: number;
+  walletAddress: string;
 
-  /**
-   * Number of items to skip before starting to collect the result set.
-   */
-  offset?: number;
+  lastSynced?: string;
+
+  walletProvider?: string;
 }
 
-export interface WalletConnectParams {}
+export interface WalletListResponse {
+  data?: Array<WalletListResponse.Data>;
+}
 
-export interface WalletGetBalanceParams {
-  /**
-   * Maximum number of items to return in a single page.
-   */
-  limit?: number;
+export namespace WalletListResponse {
+  export interface Data {
+    id: string;
 
-  /**
-   * Number of items to skip before starting to collect the result set.
-   */
-  offset?: number;
+    blockchainNetwork: string;
+
+    status: string;
+
+    walletAddress: string;
+
+    lastSynced?: string;
+
+    walletProvider?: string;
+  }
+}
+
+export interface WalletGetBalanceResponse {
+  balances?: Array<WalletGetBalanceResponse.Balance>;
+}
+
+export namespace WalletGetBalanceResponse {
+  export interface Balance {
+    amount?: string;
+
+    symbol?: string;
+  }
+}
+
+export interface WalletCreateParams {
+  network: string;
+}
+
+export interface WalletConnectParams {
+  address: string;
+
+  provider: string;
+
+  signature: string;
 }
 
 export declare namespace Wallets {
   export {
+    type WalletCreateResponse as WalletCreateResponse,
     type WalletListResponse as WalletListResponse,
-    type WalletConnectResponse as WalletConnectResponse,
     type WalletGetBalanceResponse as WalletGetBalanceResponse,
-    type WalletListParams as WalletListParams,
+    type WalletCreateParams as WalletCreateParams,
     type WalletConnectParams as WalletConnectParams,
-    type WalletGetBalanceParams as WalletGetBalanceParams,
   };
 }

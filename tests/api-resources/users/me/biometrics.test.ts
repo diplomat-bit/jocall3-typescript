@@ -2,11 +2,45 @@
 
 import Jocall3 from 'jocall3-node';
 
-const client = new Jocall3({ baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010' });
+const client = new Jocall3({
+  apiKey: 'My API Key',
+  baseURL: process.env['TEST_API_BASE_URL'] ?? 'http://127.0.0.1:4010',
+});
 
 describe('resource biometrics', () => {
-  // Prism tests are disabled
-  test.skip('retrieveStatus', async () => {
+  test('delete', async () => {
+    const responsePromise = client.users.me.biometrics.delete();
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  test('enroll: only required params', async () => {
+    const responsePromise = client.users.me.biometrics.enroll({
+      biometricType: 'fingerprint',
+      signature: 'signature',
+    });
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  test('enroll: required and optional params', async () => {
+    const response = await client.users.me.biometrics.enroll({
+      biometricType: 'fingerprint',
+      signature: 'signature',
+    });
+  });
+
+  test('retrieveStatus', async () => {
     const responsePromise = client.users.me.biometrics.retrieveStatus();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
@@ -17,9 +51,8 @@ describe('resource biometrics', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  // Prism tests are disabled
-  test.skip('verify', async () => {
-    const responsePromise = client.users.me.biometrics.verify({});
+  test('verify: only required params', async () => {
+    const responsePromise = client.users.me.biometrics.verify({ biometricSignature: 'biometricSignature' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -27,5 +60,9 @@ describe('resource biometrics', () => {
     const dataAndResponse = await responsePromise.withResponse();
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  test('verify: required and optional params', async () => {
+    const response = await client.users.me.biometrics.verify({ biometricSignature: 'biometricSignature' });
   });
 });

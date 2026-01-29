@@ -2,46 +2,82 @@
 
 import { APIResource } from '../../core/resource';
 import * as NFTsAPI from './nfts';
-import { NFTListParams, NFTListResponse, NFTs } from './nfts';
+import { NFTListResponse, NFTMintParams, NFTs } from './nfts';
+import * as SmartContractsAPI from './smart-contracts';
+import { SmartContractDeployParams, SmartContracts } from './smart-contracts';
 import * as TransactionsAPI from './transactions';
-import { TransactionInitiateParams, TransactionInitiateResponse, Transactions } from './transactions';
+import {
+  TransactionBridgeChainParams,
+  TransactionSendCryptoParams,
+  TransactionSendCryptoResponse,
+  TransactionSwapTokensParams,
+  Transactions,
+} from './transactions';
 import * as WalletsAPI from './wallets';
 import {
   WalletConnectParams,
-  WalletConnectResponse,
-  WalletGetBalanceParams,
+  WalletCreateParams,
+  WalletCreateResponse,
   WalletGetBalanceResponse,
-  WalletListParams,
   WalletListResponse,
   Wallets,
 } from './wallets';
+import { APIPromise } from '../../core/api-promise';
+import { RequestOptions } from '../../internal/request-options';
 
 export class Web3 extends APIResource {
   wallets: WalletsAPI.Wallets = new WalletsAPI.Wallets(this._client);
   transactions: TransactionsAPI.Transactions = new TransactionsAPI.Transactions(this._client);
   nfts: NFTsAPI.NFTs = new NFTsAPI.NFTs(this._client);
+  smartContracts: SmartContractsAPI.SmartContracts = new SmartContractsAPI.SmartContracts(this._client);
+
+  /**
+   * Get Blockchain Network Health
+   *
+   * @example
+   * ```ts
+   * const response = await client.web3.getNetworkStatus();
+   * ```
+   */
+  getNetworkStatus(options?: RequestOptions): APIPromise<Web3GetNetworkStatusResponse> {
+    return this._client.get('/web3/network/status', options);
+  }
+}
+
+export interface Web3GetNetworkStatusResponse {
+  ethereum?: unknown;
+
+  polygon?: unknown;
+
+  solana?: unknown;
 }
 
 Web3.Wallets = Wallets;
 Web3.Transactions = Transactions;
 Web3.NFTs = NFTs;
+Web3.SmartContracts = SmartContracts;
 
 export declare namespace Web3 {
+  export { type Web3GetNetworkStatusResponse as Web3GetNetworkStatusResponse };
+
   export {
     Wallets as Wallets,
+    type WalletCreateResponse as WalletCreateResponse,
     type WalletListResponse as WalletListResponse,
-    type WalletConnectResponse as WalletConnectResponse,
     type WalletGetBalanceResponse as WalletGetBalanceResponse,
-    type WalletListParams as WalletListParams,
+    type WalletCreateParams as WalletCreateParams,
     type WalletConnectParams as WalletConnectParams,
-    type WalletGetBalanceParams as WalletGetBalanceParams,
   };
 
   export {
     Transactions as Transactions,
-    type TransactionInitiateResponse as TransactionInitiateResponse,
-    type TransactionInitiateParams as TransactionInitiateParams,
+    type TransactionSendCryptoResponse as TransactionSendCryptoResponse,
+    type TransactionBridgeChainParams as TransactionBridgeChainParams,
+    type TransactionSendCryptoParams as TransactionSendCryptoParams,
+    type TransactionSwapTokensParams as TransactionSwapTokensParams,
   };
 
-  export { NFTs as NFTs, type NFTListResponse as NFTListResponse, type NFTListParams as NFTListParams };
+  export { NFTs as NFTs, type NFTListResponse as NFTListResponse, type NFTMintParams as NFTMintParams };
+
+  export { SmartContracts as SmartContracts, type SmartContractDeployParams as SmartContractDeployParams };
 }
