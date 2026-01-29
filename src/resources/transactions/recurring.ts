@@ -2,67 +2,80 @@
 
 import { APIResource } from '../../core/resource';
 import { APIPromise } from '../../core/api-promise';
-import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
-import { path } from '../../internal/utils/path';
 
 export class Recurring extends APIResource {
   /**
-   * Manually Create Recurring Schedule
+   * Retrieves a list of all detected or user-defined recurring transactions, useful
+   * for budget tracking and subscription management.
+   *
+   * @example
+   * ```ts
+   * const recurrings =
+   *   await client.transactions.recurring.list();
+   * ```
    */
-  create(body: RecurringCreateParams, options?: RequestOptions): APIPromise<void> {
-    return this._client.post('/transactions/recurring', {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
-  }
-
-  /**
-   * List Detected Subscriptions
-   */
-  list(options?: RequestOptions): APIPromise<RecurringListResponse> {
-    return this._client.get('/transactions/recurring', options);
-  }
-
-  /**
-   * Cancel Recurring Payment Detection
-   */
-  cancel(recurringID: string, options?: RequestOptions): APIPromise<void> {
-    return this._client.delete(path`/transactions/recurring/${recurringID}`, {
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
+  list(
+    query: RecurringListParams | null | undefined = {},
+    options?: RequestOptions,
+  ): APIPromise<RecurringListResponse> {
+    return this._client.get('/transactions/recurring', { query, ...options });
   }
 }
 
 export interface RecurringListResponse {
-  data?: Array<RecurringListResponse.Data>;
+  data: Array<RecurringListResponse.Data>;
+
+  limit: number;
+
+  offset: number;
+
+  total: number;
+
+  nextOffset?: number;
 }
 
 export namespace RecurringListResponse {
   export interface Data {
     id?: string;
 
+    aiConfidenceScore?: number;
+
+    amount?: number;
+
+    category?: string;
+
+    currency?: string;
+
     description?: string;
 
     frequency?: string;
 
-    nextExpectedDate?: string;
+    lastPaidDate?: string;
+
+    linkedAccountId?: string;
+
+    nextDueDate?: string;
+
+    status?: string;
   }
 }
 
-export interface RecurringCreateParams {
-  amount: number;
+export interface RecurringListParams {
+  /**
+   * Maximum number of items to return in a single page.
+   */
+  limit?: number;
 
-  category: string;
-
-  frequency: string;
+  /**
+   * Number of items to skip before starting to collect the result set.
+   */
+  offset?: number;
 }
 
 export declare namespace Recurring {
   export {
     type RecurringListResponse as RecurringListResponse,
-    type RecurringCreateParams as RecurringCreateParams,
+    type RecurringListParams as RecurringListParams,
   };
 }

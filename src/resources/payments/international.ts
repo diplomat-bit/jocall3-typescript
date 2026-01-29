@@ -2,70 +2,29 @@
 
 import { APIResource } from '../../core/resource';
 import { APIPromise } from '../../core/api-promise';
-import { buildHeaders } from '../../internal/headers';
 import { RequestOptions } from '../../internal/request-options';
 import { path } from '../../internal/utils/path';
 
 export class International extends APIResource {
   /**
-   * Get international payment status
+   * Retrieves the current processing status and details of an initiated
+   * international payment.
+   *
+   * @example
+   * ```ts
+   * const response =
+   *   await client.payments.international.retrieveStatus(
+   *     'int_pmt_xyz7890',
+   *   );
+   * ```
    */
-  retrieveStatus(
-    paymentID: string,
-    options?: RequestOptions,
-  ): APIPromise<InternationalRetrieveStatusResponse> {
+  retrieveStatus(paymentID: string, options?: RequestOptions): APIPromise<unknown> {
     return this._client.get(path`/payments/international/${paymentID}/status`, options);
   }
-
-  /**
-   * EU SEPA Credit Transfer
-   */
-  sendSepa(body: InternationalSendSepaParams, options?: RequestOptions): APIPromise<void> {
-    return this._client.post('/payments/international/sepa', {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
-  }
-
-  /**
-   * Global SWIFT Transaction
-   */
-  sendSwift(body: InternationalSendSwiftParams, options?: RequestOptions): APIPromise<void> {
-    return this._client.post('/payments/international/swift', {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
-  }
 }
 
-export interface InternationalRetrieveStatusResponse {
-  fx_rate?: number;
-
-  status?: string;
-}
-
-export interface InternationalSendSepaParams {
-  amount: number;
-
-  iban: string;
-}
-
-export interface InternationalSendSwiftParams {
-  amount: number;
-
-  bic: string;
-
-  currency: string;
-
-  iban: string;
-}
+export type InternationalRetrieveStatusResponse = unknown;
 
 export declare namespace International {
-  export {
-    type InternationalRetrieveStatusResponse as InternationalRetrieveStatusResponse,
-    type InternationalSendSepaParams as InternationalSendSepaParams,
-    type InternationalSendSwiftParams as InternationalSendSwiftParams,
-  };
+  export { type InternationalRetrieveStatusResponse as InternationalRetrieveStatusResponse };
 }

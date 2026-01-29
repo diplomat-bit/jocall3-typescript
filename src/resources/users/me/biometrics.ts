@@ -2,74 +2,81 @@
 
 import { APIResource } from '../../../core/resource';
 import { APIPromise } from '../../../core/api-promise';
-import { buildHeaders } from '../../../internal/headers';
 import { RequestOptions } from '../../../internal/request-options';
 
 export class Biometrics extends APIResource {
   /**
-   * Remove All Biometric Data
-   */
-  delete(options?: RequestOptions): APIPromise<void> {
-    return this._client.delete('/users/me/biometrics', {
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
-  }
-
-  /**
-   * Enroll New Biometric Signature
-   */
-  enroll(body: BiometricEnrollParams, options?: RequestOptions): APIPromise<void> {
-    return this._client.post('/users/me/biometrics/enroll', {
-      body,
-      ...options,
-      headers: buildHeaders([{ Accept: '*/*' }, options?.headers]),
-    });
-  }
-
-  /**
-   * Get Biometric Enrollment Status
+   * Retrieves the current status of biometric enrollments for the authenticated
+   * user.
+   *
+   * @example
+   * ```ts
+   * const response =
+   *   await client.users.me.biometrics.retrieveStatus();
+   * ```
    */
   retrieveStatus(options?: RequestOptions): APIPromise<BiometricRetrieveStatusResponse> {
     return this._client.get('/users/me/biometrics', options);
   }
 
   /**
-   * Verify Biometric Data for Sensitive Operations
+   * Performs real-time biometric verification to authorize sensitive actions or
+   * access protected resources, using a one-time biometric signature.
+   *
+   * @example
+   * ```ts
+   * const response = await client.users.me.biometrics.verify({
+   *   biometricSignature:
+   *     'base64encoded_one_time_fingerprint_proof',
+   *   biometricType: 'fingerprint',
+   *   deviceId: 'dev_mobile_android_ddeeff',
+   * });
+   * ```
    */
   verify(body: BiometricVerifyParams, options?: RequestOptions): APIPromise<BiometricVerifyResponse> {
     return this._client.post('/users/me/biometrics/verify', { body, ...options });
   }
 }
 
+/**
+ * Current biometric enrollment status for a user.
+ */
 export interface BiometricRetrieveStatusResponse {
-  biometricsEnrolled?: boolean;
+  biometricsEnrolled: boolean;
+
+  enrolledBiometrics: Array<BiometricRetrieveStatusResponse.EnrolledBiometric>;
 
   lastUsed?: string;
 }
 
-export interface BiometricVerifyResponse {
-  verificationStatus?: string;
+export namespace BiometricRetrieveStatusResponse {
+  export interface EnrolledBiometric {
+    deviceId?: string;
+
+    enrollmentDate?: string;
+
+    type?: string;
+  }
 }
 
-export interface BiometricEnrollParams {
-  biometricType: 'fingerprint' | 'facial_recognition';
+export interface BiometricVerifyResponse {
+  message?: string;
 
-  /**
-   * Public key or hash of signature
-   */
-  signature: string;
+  verificationStatus?: string;
 }
 
 export interface BiometricVerifyParams {
   biometricSignature: string;
+
+  biometricType: string;
+
+  deviceId: string;
 }
 
 export declare namespace Biometrics {
   export {
     type BiometricRetrieveStatusResponse as BiometricRetrieveStatusResponse,
     type BiometricVerifyResponse as BiometricVerifyResponse,
-    type BiometricEnrollParams as BiometricEnrollParams,
     type BiometricVerifyParams as BiometricVerifyParams,
   };
 }
