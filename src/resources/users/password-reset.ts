@@ -6,40 +6,51 @@ import { RequestOptions } from '../../internal/request-options';
 
 export class PasswordReset extends APIResource {
   /**
-   * Confirms the password reset using the received verification code and sets a new
-   * password.
-   *
-   * @example
-   * ```ts
-   * const response = await client.users.passwordReset.confirm();
-   * ```
+   * Confirm Password Reset with Code
    */
-  confirm(body: PasswordResetConfirmParams, options?: RequestOptions): APIPromise<unknown> {
+  confirm(
+    body: PasswordResetConfirmParams,
+    options?: RequestOptions,
+  ): APIPromise<PasswordResetConfirmResponse> {
     return this._client.post('/users/password-reset/confirm', { body, ...options });
   }
 
   /**
-   * Starts the password reset flow by sending a verification code or link to the
-   * user's registered email or phone.
-   *
-   * @example
-   * ```ts
-   * const response =
-   *   await client.users.passwordReset.initiate();
-   * ```
+   * Initiate Password Reset Flow
    */
-  initiate(body: PasswordResetInitiateParams, options?: RequestOptions): APIPromise<unknown> {
+  initiate(
+    body: PasswordResetInitiateParams,
+    options?: RequestOptions,
+  ): APIPromise<PasswordResetInitiateResponse> {
     return this._client.post('/users/password-reset/initiate', { body, ...options });
   }
 }
 
-export type PasswordResetConfirmResponse = unknown;
+export interface PasswordResetConfirmResponse {
+  message?: string;
+}
 
-export type PasswordResetInitiateResponse = unknown;
+export interface PasswordResetInitiateResponse {
+  message?: string;
+}
 
-export interface PasswordResetConfirmParams {}
+export interface PasswordResetConfirmParams {
+  identifier: string;
 
-export interface PasswordResetInitiateParams {}
+  newPassword: string;
+
+  /**
+   * The 6-digit code sent to user
+   */
+  verificationCode: string;
+}
+
+export interface PasswordResetInitiateParams {
+  /**
+   * Email or phone number
+   */
+  identifier: string;
+}
 
 export declare namespace PasswordReset {
   export {

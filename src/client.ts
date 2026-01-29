@@ -21,21 +21,27 @@ import { APIPromise } from './core/api-promise';
 import {
   AccountLinkParams,
   AccountLinkResponse,
-  AccountListParams,
   AccountListResponse,
+  AccountOpenParams,
+  AccountOpenResponse,
   AccountRetrieveResponse,
   Accounts,
 } from './resources/accounts/accounts';
 import { AI } from './resources/ai/ai';
-import { Corporate } from './resources/corporate/corporate';
-import { Investments } from './resources/investments/investments';
-import { Lending } from './resources/lending/lending';
 import {
-  Marketplace,
-  MarketplaceListProductsParams,
-  MarketplaceListProductsResponse,
-} from './resources/marketplace/marketplace';
-import { Payments } from './resources/payments/payments';
+  Corporate,
+  CorporateOnboardEntityParams,
+  CorporateOnboardEntityResponse,
+} from './resources/corporate/corporate';
+import { Investments } from './resources/investments/investments';
+import {
+  Lending,
+  LendingGetStatusResponse,
+  LendingSubmitApplicationParams,
+  LendingSubmitApplicationResponse,
+} from './resources/lending/lending';
+import { Marketplace, MarketplaceListProductsResponse } from './resources/marketplace/marketplace';
+import { PaymentListResponse, Payments } from './resources/payments/payments';
 import {
   Sustainability,
   SustainabilityGetFootprintResponse,
@@ -43,12 +49,11 @@ import {
 import { System } from './resources/system/system';
 import {
   TransactionAddNotesParams,
-  TransactionAddNotesResponse,
   TransactionCategorizeParams,
-  TransactionCategorizeResponse,
+  TransactionDisputeParams,
   TransactionListParams,
   TransactionListResponse,
-  TransactionRetrieveResponse,
+  TransactionSplitParams,
   Transactions,
 } from './resources/transactions/transactions';
 import {
@@ -58,7 +63,7 @@ import {
   UserRegisterResponse,
   Users,
 } from './resources/users/users';
-import { Web3 } from './resources/web3/web3';
+import { Web3, Web3GetNetworkStatusResponse } from './resources/web3/web3';
 import { type Fetch } from './internal/builtin-types';
 import { HeadersLike, NullableHeaders, buildHeaders } from './internal/headers';
 import { FinalRequestOptions, RequestOptions } from './internal/request-options';
@@ -882,28 +887,32 @@ export declare namespace Jocall3 {
     type AccountRetrieveResponse as AccountRetrieveResponse,
     type AccountListResponse as AccountListResponse,
     type AccountLinkResponse as AccountLinkResponse,
-    type AccountListParams as AccountListParams,
+    type AccountOpenResponse as AccountOpenResponse,
     type AccountLinkParams as AccountLinkParams,
+    type AccountOpenParams as AccountOpenParams,
   };
 
   export {
     Transactions as Transactions,
-    type TransactionRetrieveResponse as TransactionRetrieveResponse,
     type TransactionListResponse as TransactionListResponse,
-    type TransactionAddNotesResponse as TransactionAddNotesResponse,
-    type TransactionCategorizeResponse as TransactionCategorizeResponse,
     type TransactionListParams as TransactionListParams,
     type TransactionAddNotesParams as TransactionAddNotesParams,
     type TransactionCategorizeParams as TransactionCategorizeParams,
+    type TransactionDisputeParams as TransactionDisputeParams,
+    type TransactionSplitParams as TransactionSplitParams,
   };
 
   export { AI as AI };
 
-  export { Corporate as Corporate };
+  export {
+    Corporate as Corporate,
+    type CorporateOnboardEntityResponse as CorporateOnboardEntityResponse,
+    type CorporateOnboardEntityParams as CorporateOnboardEntityParams,
+  };
 
-  export { Web3 as Web3 };
+  export { Web3 as Web3, type Web3GetNetworkStatusResponse as Web3GetNetworkStatusResponse };
 
-  export { Payments as Payments };
+  export { Payments as Payments, type PaymentListResponse as PaymentListResponse };
 
   export {
     Sustainability as Sustainability,
@@ -913,12 +922,19 @@ export declare namespace Jocall3 {
   export {
     Marketplace as Marketplace,
     type MarketplaceListProductsResponse as MarketplaceListProductsResponse,
-    type MarketplaceListProductsParams as MarketplaceListProductsParams,
   };
 
-  export { Lending as Lending };
+  export {
+    Lending as Lending,
+    type LendingGetStatusResponse as LendingGetStatusResponse,
+    type LendingSubmitApplicationResponse as LendingSubmitApplicationResponse,
+    type LendingSubmitApplicationParams as LendingSubmitApplicationParams,
+  };
 
   export { Investments as Investments };
 
   export { System as System };
+
+  export type Address = API.Address;
+  export type Transaction = API.Transaction;
 }

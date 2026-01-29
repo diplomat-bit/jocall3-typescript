@@ -8,8 +8,8 @@ const client = new Jocall3({
 });
 
 describe('resource users', () => {
-  test('login', async () => {
-    const responsePromise = client.users.login({});
+  test('login: only required params', async () => {
+    const responsePromise = client.users.login({ email: 'email', password: 'password' });
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -19,8 +19,12 @@ describe('resource users', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('register', async () => {
-    const responsePromise = client.users.register({});
+  test('login: required and optional params', async () => {
+    const response = await client.users.login({ email: 'email', password: 'password' });
+  });
+
+  test('logout', async () => {
+    const responsePromise = client.users.logout();
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -28,5 +32,28 @@ describe('resource users', () => {
     const dataAndResponse = await responsePromise.withResponse();
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  test('register: only required params', async () => {
+    const responsePromise = client.users.register({
+      email: 'email',
+      name: 'name',
+      password: 'password',
+    });
+    const rawResponse = await responsePromise.asResponse();
+    expect(rawResponse).toBeInstanceOf(Response);
+    const response = await responsePromise;
+    expect(response).not.toBeInstanceOf(Response);
+    const dataAndResponse = await responsePromise.withResponse();
+    expect(dataAndResponse.data).toBe(response);
+    expect(dataAndResponse.response).toBe(rawResponse);
+  });
+
+  test('register: required and optional params', async () => {
+    const response = await client.users.register({
+      email: 'email',
+      name: 'name',
+      password: 'password',
+    });
   });
 });
