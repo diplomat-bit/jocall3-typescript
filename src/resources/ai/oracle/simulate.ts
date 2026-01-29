@@ -6,52 +6,30 @@ import { RequestOptions } from '../../../internal/request-options';
 
 export class Simulate extends APIResource {
   /**
-   * Run an Advanced Multi-Variable Financial Simulation
+   * Engages the Quantum Oracle for highly complex, multi-variable simulations,
+   * allowing precise control over numerous financial parameters, market conditions,
+   * and personal events to generate deep, predictive insights and sensitivity
+   * analysis.
    *
    * @example
    * ```ts
    * const response =
-   *   await client.ai.oracle.simulate.runAdvanced({
-   *     prompt: 'prompt',
-   *     scenarios: [{ name: 'name' }],
-   *   });
+   *   await client.ai.oracle.simulate.runAdvanced();
    * ```
    */
-  runAdvanced(
-    body: SimulateRunAdvancedParams,
-    options?: RequestOptions,
-  ): APIPromise<SimulateRunAdvancedResponse> {
+  runAdvanced(body: SimulateRunAdvancedParams, options?: RequestOptions): APIPromise<unknown> {
     return this._client.post('/ai/oracle/simulate/advanced', { body, ...options });
   }
 
   /**
-   * Run a Probabilistic Monte Carlo Simulation
+   * Submits a hypothetical scenario to the Quantum Oracle AI for standard financial
+   * impact analysis. The AI simulates the effect on the user's current financial
+   * state and provides a summary.
    *
    * @example
    * ```ts
    * const response =
-   *   await client.ai.oracle.simulate.runMonteCarlo({
-   *     iterations: 100,
-   *     variables: ['inflation', 'oil_prices'],
-   *   });
-   * ```
-   */
-  runMonteCarlo(
-    body: SimulateRunMonteCarloParams,
-    options?: RequestOptions,
-  ): APIPromise<SimulateRunMonteCarloResponse> {
-    return this._client.post('/ai/oracle/simulate/monte-carlo', { body, ...options });
-  }
-
-  /**
-   * Run a 'What-If' Financial Simulation (Standard)
-   *
-   * @example
-   * ```ts
-   * const response =
-   *   await client.ai.oracle.simulate.runStandard({
-   *     prompt: 'prompt',
-   *   });
+   *   await client.ai.oracle.simulate.runStandard();
    * ```
    */
   runStandard(
@@ -62,89 +40,34 @@ export class Simulate extends APIResource {
   }
 }
 
-export interface SimulateRunAdvancedResponse {
-  simulationId: string;
-
-  status: string;
-
-  confidenceScore?: number;
-
-  data?: Array<{ [key: string]: unknown }>;
-
-  outcomeNarrative?: string;
-
-  projectedValue?: number;
-}
-
-export interface SimulateRunMonteCarloResponse {
-  distributionGraphData?: Array<unknown>;
-
-  probabilityOfSuccess?: number;
-
-  simulationId?: string;
-}
+export type SimulateRunAdvancedResponse = unknown;
 
 export interface SimulateRunStandardResponse {
-  simulationId: string;
-
-  status: string;
-
-  confidenceScore?: number;
-
-  data?: Array<{ [key: string]: unknown }>;
-
-  outcomeNarrative?: string;
-
-  projectedValue?: number;
+  /**
+   * AI-driven risk assessment of the simulated scenario.
+   */
+  riskAnalysis?: unknown;
 }
 
 export interface SimulateRunAdvancedParams {
-  prompt: string;
-
-  scenarios: Array<SimulateRunAdvancedParams.Scenario>;
-
+  /**
+   * Optional: Global economic conditions to apply to all scenarios.
+   */
   globalEconomicFactors?: unknown;
 
+  /**
+   * Optional: Personal financial assumptions to override defaults.
+   */
   personalAssumptions?: unknown;
 }
 
-export namespace SimulateRunAdvancedParams {
-  export interface Scenario {
-    name: string;
-
-    description?: string;
-
-    variables?: { [key: string]: unknown };
-  }
-}
-
-export interface SimulateRunMonteCarloParams {
-  iterations: number;
-
-  variables: Array<string>;
-
-  confidenceInterval?: number;
-}
-
-export interface SimulateRunStandardParams {
-  /**
-   * Describe the financial scenario
-   */
-  prompt: string;
-
-  /**
-   * Key variables like duration, rate, or amount
-   */
-  parameters?: unknown;
-}
+export interface SimulateRunStandardParams {}
 
 export declare namespace Simulate {
   export {
     type SimulateRunAdvancedResponse as SimulateRunAdvancedResponse,
-    type SimulateRunMonteCarloResponse as SimulateRunMonteCarloResponse,
     type SimulateRunStandardResponse as SimulateRunStandardResponse,
     type SimulateRunAdvancedParams as SimulateRunAdvancedParams,
-    type SimulateRunMonteCarloParams as SimulateRunMonteCarloParams,
     type SimulateRunStandardParams as SimulateRunStandardParams,
   };
 }

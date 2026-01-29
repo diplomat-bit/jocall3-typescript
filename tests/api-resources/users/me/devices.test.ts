@@ -19,33 +19,10 @@ describe('resource devices', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('deregister', async () => {
-    const responsePromise = client.users.me.devices.deregister('deviceId');
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  test('register: only required params', async () => {
-    const responsePromise = client.users.me.devices.register({ deviceId: 'deviceId', type: 'type' });
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  test('register: required and optional params', async () => {
-    const response = await client.users.me.devices.register({
-      deviceId: 'deviceId',
-      type: 'type',
-      pushToken: 'pushToken',
-    });
+  test('list: request options and params are passed correctly', async () => {
+    // ensure the request options are being passed correctly by passing an invalid HTTP method in order to cause an error
+    await expect(
+      client.users.me.devices.list({ limit: 0, offset: 0 }, { path: '/_stainless_unknown_path' }),
+    ).rejects.toThrow(Jocall3.NotFoundError);
   });
 });

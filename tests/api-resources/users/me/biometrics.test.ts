@@ -8,38 +8,6 @@ const client = new Jocall3({
 });
 
 describe('resource biometrics', () => {
-  test('delete', async () => {
-    const responsePromise = client.users.me.biometrics.delete();
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  test('enroll: only required params', async () => {
-    const responsePromise = client.users.me.biometrics.enroll({
-      biometricType: 'fingerprint',
-      signature: 'signature',
-    });
-    const rawResponse = await responsePromise.asResponse();
-    expect(rawResponse).toBeInstanceOf(Response);
-    const response = await responsePromise;
-    expect(response).not.toBeInstanceOf(Response);
-    const dataAndResponse = await responsePromise.withResponse();
-    expect(dataAndResponse.data).toBe(response);
-    expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  test('enroll: required and optional params', async () => {
-    const response = await client.users.me.biometrics.enroll({
-      biometricType: 'fingerprint',
-      signature: 'signature',
-    });
-  });
-
   test('retrieveStatus', async () => {
     const responsePromise = client.users.me.biometrics.retrieveStatus();
     const rawResponse = await responsePromise.asResponse();
@@ -51,8 +19,8 @@ describe('resource biometrics', () => {
     expect(dataAndResponse.response).toBe(rawResponse);
   });
 
-  test('verify: only required params', async () => {
-    const responsePromise = client.users.me.biometrics.verify({ biometricSignature: 'biometricSignature' });
+  test('verify', async () => {
+    const responsePromise = client.users.me.biometrics.verify({});
     const rawResponse = await responsePromise.asResponse();
     expect(rawResponse).toBeInstanceOf(Response);
     const response = await responsePromise;
@@ -60,9 +28,5 @@ describe('resource biometrics', () => {
     const dataAndResponse = await responsePromise.withResponse();
     expect(dataAndResponse.data).toBe(response);
     expect(dataAndResponse.response).toBe(rawResponse);
-  });
-
-  test('verify: required and optional params', async () => {
-    const response = await client.users.me.biometrics.verify({ biometricSignature: 'biometricSignature' });
   });
 });
